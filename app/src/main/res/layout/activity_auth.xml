@@ -76,7 +76,7 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/auth_btn_bg"
-            android:text="Sign In"
+            android:text="@string/sign_in"
             android:textColor="@android:color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -98,7 +98,7 @@
         app:layout_constraintTop_toBottomOf="@+id/appIconCIV">
 
         <EditText
-            android:id="@+id/clientNameET"
+            android:id="@+id/nameSUET"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"
@@ -110,13 +110,13 @@
             android:textAlignment="center"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="16sp"
-            app:layout_constraintBottom_toTopOf="@+id/clientEmailET"
+            app:layout_constraintBottom_toTopOf="@+id/emailSUET"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
-            android:id="@+id/clientEmailET"
+            android:id="@+id/emailSUET"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"
@@ -129,13 +129,13 @@
             android:textAlignment="center"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="16sp"
-            app:layout_constraintBottom_toTopOf="@+id/clientPasswordET"
+            app:layout_constraintBottom_toTopOf="@+id/passwordSUET"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/nameSUET" />
 
         <EditText
-            android:id="@+id/clientPasswordET"
+            android:id="@+id/passwordSUET"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginBottom="8dp"
@@ -153,7 +153,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/clientEmailET" />
+            app:layout_constraintTop_toBottomOf="@+id/emailSUET" />
 
         <Button
             android:id="@+id/signUpSUBTN"
@@ -163,11 +163,11 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/auth_btn_bg"
-            android:text="Sign Up"
+            android:text="@string/sign_up"
             android:textColor="@android:color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/clientPasswordET" />
+            app:layout_constraintTop_toBottomOf="@+id/passwordSUET" />
 
     </android.support.constraint.ConstraintLayout>
 
@@ -182,6 +182,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:contentDescription="top" />
+        android:contentDescription="@string/top" />
 
 </android.support.constraint.ConstraintLayout>

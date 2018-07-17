@@ -6,4 +6,11 @@
     <string name="navigation_drawer_open">Open Navigation Drawer</string>
     <string name="navigation_drawer_close">Close Navigation Drawer</string>
     <string name="title_activity_maps">Map</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="top">top</string>
+    <string name="create_new_client">Create New Client</string>
+    <string name="admin_password">Admin Password</string>
+    <string name="create">Create</string>
+    <string name="cancel">Cancel</string>
 </resources>

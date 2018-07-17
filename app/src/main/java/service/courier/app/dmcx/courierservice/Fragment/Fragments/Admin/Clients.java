@@ -3,6 +3,7 @@ package service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin;
 import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -16,19 +17,24 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import dmax.dialog.SpotsDialog;
 import service.courier.app.dmcx.courierservice.Activity.AuthActivity;
 import service.courier.app.dmcx.courierservice.Activity.MainActivity;
 import service.courier.app.dmcx.courierservice.Firebase.AFModel;
 import service.courier.app.dmcx.courierservice.Firebase.AppFirebase;
-import service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin.Constent.Clients.ClientRecyclerViewAdapter;
+import service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin.Contents.Clients.ClientRecyclerViewAdapter;
 import service.courier.app.dmcx.courierservice.Models.Client;
 import service.courier.app.dmcx.courierservice.R;
 import service.courier.app.dmcx.courierservice.Utility.AppValidator;
@@ -44,16 +50,30 @@ public class Clients extends Fragment {
 
     private List<Client> clients;
 
-    private List<Client> loadData() {
-        clients = new ArrayList<>();
-        return clients;
-    }
-
     private void loadRecyclerView() {
-        clientRecyclerViewAdapter = new ClientRecyclerViewAdapter(loadData());
-        clientRecyclerViewAdapter.notifyDataSetChanged();
+        clients = new ArrayList<>();
 
-        serviceManListRV.setAdapter(clientRecyclerViewAdapter);
+        DatabaseReference reference = Vars.appFirebase.getDbReference();
+        reference.child(AFModel.users).child(AFModel.client).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        Client client = snapshot.getValue(Client.class);
+                        clients.add(client);
+                    }
+
+                    clientRecyclerViewAdapter = new ClientRecyclerViewAdapter(clients);
+                    clientRecyclerViewAdapter.notifyDataSetChanged();
+                    serviceManListRV.setAdapter(clientRecyclerViewAdapter);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Nullable
@@ -146,6 +166,7 @@ public class Clients extends Fragment {
                                             if (isTaskCompleted) {
                                                 Map<String, Object> map = new HashMap<>();
                                                 map.put(AFModel.image_path, "");
+                                                map.put(AFModel.id, Vars.appFirebase.getCurrentUser().getUid());
                                                 map.put(AFModel.username, name);
                                                 map.put(AFModel.admin_id, adminId);
                                                 map.put(AFModel.phone_no, "");
@@ -168,6 +189,7 @@ public class Clients extends Fragment {
                                                                 public void ProcessCallback(boolean isTaskCompleted) {
                                                                     Vars.appDialog.dismiss();
                                                                     spotsDialog.dismiss();
+                                                                    loadRecyclerView();
 
                                                                     Toast.makeText(MainActivity.instance, "Client created!", Toast.LENGTH_SHORT).show();
                                                                 }

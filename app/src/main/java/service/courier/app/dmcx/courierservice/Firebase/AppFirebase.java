@@ -2,17 +2,23 @@ package service.courier.app.dmcx.courierservice.Firebase;
 
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Map;
 import java.util.Objects;
+
+import service.courier.app.dmcx.courierservice.Activity.MainActivity;
 
 public class AppFirebase {
 
@@ -79,6 +85,35 @@ public class AppFirebase {
                     callback.ExceptionCallback(task.getException().getMessage());
                 }
             }
+        });
+    }
+
+    public void isUserAdmin(final FirebaseCallback callback) {
+        final String uid = mAuth.getCurrentUser().getUid();
+        mReference.child(AFModel.users).child(AFModel.admin).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChild(uid)) {
+                    callback.ProcessCallback(true);
+                    callback.ExceptionCallback("");
+                } else {
+                    mReference.child(AFModel.users).child(AFModel.client).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.hasChild(uid)) {
+                                callback.ProcessCallback(false);
+                                callback.ExceptionCallback("");
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {}
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
     }
 

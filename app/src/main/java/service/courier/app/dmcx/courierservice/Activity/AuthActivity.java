@@ -1,5 +1,6 @@
 package service.courier.app.dmcx.courierservice.Activity;
 
+import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -74,9 +75,9 @@ public class AuthActivity extends AppCompatActivity {
         passwordSIET = findViewById(R.id.passwordSIET);
         signInSIBTN = findViewById(R.id.signInSIBTN);
 
-        nameSUET = findViewById(R.id.clientNameET);
-        emailSUET = findViewById(R.id.clientEmailET);
-        passwordSUET = findViewById(R.id.clientPasswordET);
+        nameSUET = findViewById(R.id.nameSUET);
+        emailSUET = findViewById(R.id.emailSUET);
+        passwordSUET = findViewById(R.id.passwordSUET);
         signUpSUBTN = findViewById(R.id.signUpSUBTN);
 
         switchBTN = findViewById(R.id.switchBTN);
@@ -114,7 +115,7 @@ public class AuthActivity extends AppCompatActivity {
                 final String email = emailSIET.getText().toString();
                 final String passwd = passwordSIET.getText().toString();
 
-                boolean isEmailEmpty = AppValidator.empty(email);
+                final boolean isEmailEmpty = AppValidator.empty(email);
                 boolean isEmailNotValid = !AppValidator.validEmail(email);
                 boolean isPasswordEmpty = AppValidator.empty(passwd);
                 boolean isPasswordNotValid = !AppValidator.validPassword(passwd);
@@ -142,7 +143,18 @@ public class AuthActivity extends AppCompatActivity {
                         spotsDialog.dismiss();
 
                         if (isTaskCompleted) {
-                            startMainActivity();
+                            Vars.appFirebase.isUserAdmin(new AppFirebase.FirebaseCallback() {
+                                @Override
+                                public void ProcessCallback(boolean isTaskCompleted) {
+                                    Vars.isUserAdmin = isTaskCompleted;
+                                    startMainActivity();
+                                }
+
+                                @Override
+                                public void ExceptionCallback(String exception) {
+
+                                }
+                            });
                         }
                     }
 
@@ -246,7 +258,18 @@ public class AuthActivity extends AppCompatActivity {
                                         @Override
                                         public void ProcessCallback(boolean isTaskCompleted) {
                                             if (isTaskCompleted) {
-                                                startMainActivity();
+                                                Vars.appFirebase.isUserAdmin(new AppFirebase.FirebaseCallback() {
+                                                    @Override
+                                                    public void ProcessCallback(boolean isTaskCompleted) {
+                                                        Vars.isUserAdmin = isTaskCompleted;
+                                                        startMainActivity();
+                                                    }
+
+                                                    @Override
+                                                    public void ExceptionCallback(String exception) {
+
+                                                    }
+                                                });
                                             }
                                         }
 
@@ -281,7 +304,18 @@ public class AuthActivity extends AppCompatActivity {
         super.onStart();
 
         if (Vars.appFirebase.getCurrentUser() != null) {
-            startMainActivity();
+            Vars.appFirebase.isUserAdmin(new AppFirebase.FirebaseCallback() {
+                @Override
+                public void ProcessCallback(boolean isTaskCompleted) {
+                    Vars.isUserAdmin = isTaskCompleted;
+                    startMainActivity();
+                }
+
+                @Override
+                public void ExceptionCallback(String exception) {
+
+                }
+            });
         }
     }
 }

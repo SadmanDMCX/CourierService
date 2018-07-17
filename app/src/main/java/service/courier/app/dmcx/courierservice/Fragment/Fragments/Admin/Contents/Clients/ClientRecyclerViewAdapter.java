@@ -1,4 +1,4 @@
-package service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin.Constent.Clients;
+package service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin.Contents.Clients;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -31,7 +31,6 @@ public class ClientRecyclerViewAdapter extends RecyclerView.Adapter<ClientRecycl
         holder.clientNameTV.setText(clients.get(position).getName());
         holder.clientStatusTV.setText(clients.get(position).getStatus());
 
-//        holder.clientImageCIV
     }
 
     @Override

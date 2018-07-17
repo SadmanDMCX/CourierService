@@ -9,13 +9,14 @@ public class Client {
     private String phone_no;
     private String status;
     private String current_location;
-    private String work_accept;
-    private String work_description;
-    private String work_destination;
-    private String created_at;
-    private String modified_at;
+    private String work;
+    private long created_at;
+    private long modified_at;
 
-    public Client(String image_path, String id, String name, String admin_id, String phone_no, String status, String current_location, String work_accept, String work_description, String work_destination, String created_at, String modified_at) {
+    public Client() {
+    }
+
+    public Client(String image_path, String id, String name, String admin_id, String phone_no, String status, String current_location, String work, long created_at, long modified_at) {
         this.image_path = image_path;
         this.id = id;
         this.name = name;
@@ -23,15 +24,9 @@ public class Client {
         this.phone_no = phone_no;
         this.status = status;
         this.current_location = current_location;
-        this.work_accept = work_accept;
-        this.work_description = work_description;
-        this.work_destination = work_destination;
+        this.work = work;
         this.created_at = created_at;
         this.modified_at = modified_at;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public String getImage_path() {
@@ -40,6 +35,10 @@ public class Client {
 
     public String getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public String getAdmin_id() {
@@ -58,23 +57,20 @@ public class Client {
         return current_location;
     }
 
-    public String getWork_accept() {
-        return work_accept;
+    public String getWork() {
+        return work;
     }
 
-    public String getWork_description() {
-        return work_description;
-    }
-
-    public String getWork_destination() {
-        return work_destination;
-    }
-
-    public String getCreated_at() {
+    public long getCreated_at() {
         return created_at;
     }
 
-    public String getModified_at() {
+    public long getModified_at() {
         return modified_at;
+    }
+
+    @Override
+    public String toString() {
+        return id+" "+image_path+" "+name+" "+admin_id+" "+phone_no+" "+status+" "+current_location+" "+work+" "+created_at+" "+modified_at;
     }
 }

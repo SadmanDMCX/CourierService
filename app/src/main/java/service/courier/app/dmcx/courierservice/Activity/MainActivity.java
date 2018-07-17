@@ -9,17 +9,16 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Toast;
 
 import service.courier.app.dmcx.courierservice.Firebase.AppFirebase;
 import service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin.Clients;
@@ -37,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
+
+    private boolean isUserAdmin;
 
     private Animation aSlideUpToPositionFast;
 
@@ -66,10 +67,17 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
-    private void loadNavFragment(int marginSize, int container, Fragment fragment, String tag) {
+    private void loadNavFragment(String title, int marginSize, int container, Fragment fragment, String tag) {
+        toolbar.setTitle(title);
         invalidateOptionsMenu();
         loadToolbarPosition(marginSize);
         AppFragmentManager.replace(MainActivity.instance, container, fragment, tag);
+    }
+
+    private void signOutUser() {
+        Vars.appFirebase.signOutUser();
+        Vars.reset();
+        startAuthActivity();
     }
 
     @Override
@@ -79,20 +87,23 @@ public class MainActivity extends AppCompatActivity {
 
         instance = this;
         Vars.appFirebase = new AppFirebase();
+        isUserAdmin = Vars.isUserAdmin;
 
         appBarLayout = findViewById(R.id.appBarLayout);
         toolbar = findViewById(R.id.toolbar);
         drawerLayout = findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navigationView);
 
-        toolbar.setTitle("");
         setSupportActionBar(toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(instance, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
-        loadToolbarPosition(15);
 
-        navigationView.inflateMenu(R.menu.drawer_menu_admin);
+        if (isUserAdmin)
+            navigationView.inflateMenu(R.menu.drawer_menu_admin);
+        else
+            navigationView.inflateMenu(R.menu.drawer_menu_client);
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -105,20 +116,36 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         switch (menuItem.getItemId()) {
                             case R.id.homeANI: {
-                                loadNavFragment(15, AppFragmentManager.fragmentMapContainer, new Home(), Home.TAG);
+                                loadNavFragment("", 15, AppFragmentManager.fragmentMapContainer, new Home(), Home.TAG);
                                 break;
                             }
                             case R.id.clientsANI: {
-                                loadNavFragment(0, AppFragmentManager.fragmentContainer, new Clients(), Clients.TAG);
+                                loadNavFragment("Clients",0, AppFragmentManager.fragmentContainer, new Clients(), Clients.TAG);
                                 break;
                             }
                             case R.id.profileANI: {
-                                loadNavFragment(0, AppFragmentManager.fragmentContainer, new Profile(), Profile.TAG);
+                                loadNavFragment("Profile",0, AppFragmentManager.fragmentContainer, new Profile(), Profile.TAG);
                                 break;
                             }
-                            case R.id.logoutANI: {
-                                Vars.appFirebase.signOutUser();
-                                startAuthActivity();
+                            case R.id.signOutANI: {
+                                signOutUser();
+                                break;
+                            }
+
+                            case R.id.homeCNI: {
+                                Toast.makeText(MainActivity.instance, "CLIENT HOME", Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                            case R.id.workListCNI: {
+                                Toast.makeText(MainActivity.instance, "CLIENT WORK", Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                            case R.id.profileCNI: {
+                                Toast.makeText(MainActivity.instance, "CLIENT PROFILE", Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                            case R.id.signOutCNI: {
+                                signOutUser();
                                 break;
                             }
                         }
@@ -130,15 +157,23 @@ public class MainActivity extends AppCompatActivity {
         });
 
         if (savedInstanceState == null) {
-            AppFragmentManager.replace(MainActivity.instance, AppFragmentManager.fragmentMapContainer, new Home(), Home.TAG);
-            navigationView.setCheckedItem(R.id.homeANI);
+            if (isUserAdmin) {
+                loadToolbarPosition(15);
+                AppFragmentManager.replace(MainActivity.instance, AppFragmentManager.fragmentMapContainer, new Home(), Home.TAG);
+                navigationView.setCheckedItem(R.id.homeANI);
+            } else {
+                loadToolbarPosition(0);
+                Toast.makeText(MainActivity.instance, "CLIENT HOME", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (Vars.currentFragment.getTag().equals(Home.TAG)) {
-            getMenuInflater().inflate(R.menu.map_menu, menu);
+        if (Vars.currentFragment != null) {
+            if (Vars.currentFragment.getTag().equals(Home.TAG)) {
+                getMenuInflater().inflate(R.menu.map_menu, menu);
+            }
         }
         return super.onCreateOptionsMenu(menu);
     }

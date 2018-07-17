@@ -16,13 +16,16 @@ public class AFModel {
     public static final String modified_at = "modified_at";
     public static final String client_list = "client_list";
     public static final String admin_id = "admin_id";
+    public static final String id = "id";
     public static final String work = "work";
+
     public static final String lat = "latitude";
     public static final String lon = "longitude";
 
 
-    public static final String work_accept = "work_accept";
+    public static final String work_title = "work_title";
     public static final String work_description = "work_description";
+    public static final String work_status = "work_status";
     public static final String work_destination = "work_destination";
 
 

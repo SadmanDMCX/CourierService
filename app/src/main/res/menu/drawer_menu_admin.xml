@@ -20,8 +20,8 @@
             android:icon="@drawable/profile_black"
             />
         <item
-            android:id="@+id/logoutANI"
-            android:title="Logout"
+            android:id="@+id/signOutANI"
+            android:title="Sign Out"
             android:icon="@drawable/logout_black"
             />
     </group>

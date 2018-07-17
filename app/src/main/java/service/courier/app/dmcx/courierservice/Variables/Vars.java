@@ -12,5 +12,13 @@ public class Vars {
     public static AppFirebase appFirebase;
     public static AppDialog appDialog;
     public static Fragment currentFragment;
+    public static boolean isUserAdmin;
+
+    public static void reset() {
+        appFirebase = null;
+        appDialog = null;
+        currentFragment = null;
+        isUserAdmin = false;
+    }
 
 }
