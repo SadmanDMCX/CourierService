@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">CourierService</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="name">Name</string>
+    <string name="navigation_drawer_open">Open Navigation Drawer</string>
+    <string name="navigation_drawer_close">Close Navigation Drawer</string>
+    <string name="title_activity_maps">Map</string>
+</resources>

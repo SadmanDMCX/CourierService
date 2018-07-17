@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/homeCNI"
+            android:title="Home"
+            android:icon="@drawable/home_black"
+            />
+        <item
+            android:id="@+id/workListCNI"
+            android:title="Work List"
+            android:icon="@drawable/list_black"
+            />
+        <item
+            android:id="@+id/profileCNI"
+            android:title="Profile"
+            android:icon="@drawable/profile_black"
+            />
+    </group>
+
+</menu>

@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "461252956626",
+    "firebase_url": "https://courierservice-android-fce02.firebaseio.com",
+    "project_id": "courierservice-android-fce02",
+    "storage_bucket": "courierservice-android-fce02.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:461252956626:android:517da0fc6c12e4a4",
+        "android_client_info": {
+          "package_name": "service.courier.app.dmcx.courierservice"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "461252956626-n4tapab4d3s813d829lun4dn6qc2vtgb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "service.courier.app.dmcx.courierservice",
+            "certificate_hash": "0d8a061c216e9bbce712815ad9cb90e8dde6ac9f"
+          }
+        },
+        {
+          "client_id": "461252956626-8vv24eqap481kefq4rpo2g0soe8rea6v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5xwfSIb1HLQAz94qW0ASOlhMmfo8XzX4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "461252956626-8vv24eqap481kefq4rpo2g0soe8rea6v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/homeANI"
+            android:title="Home"
+            android:icon="@drawable/home_black"
+            />
+        <item
+            android:id="@+id/clientsANI"
+            android:title="Clients"
+            android:icon="@drawable/list_black"
+            />
+        <item
+            android:id="@+id/profileANI"
+            android:title="Profile"
+            android:icon="@drawable/profile_black"
+            />
+        <item
+            android:id="@+id/logoutANI"
+            android:title="Logout"
+            android:icon="@drawable/logout_black"
+            />
+    </group>
+
+</menu>
