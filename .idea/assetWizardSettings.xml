@@ -23,7 +23,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="url" value="jar:file:/H:/Android/Android%20Studio%203.1.1/plugins/android/lib/android.jar!/images/material_design_icons/navigation/ic_arrow_back_black_24dp.xml" />
+                                                <entry key="url" value="jar:file:/H:/Android/Android%20Studio%203.1.1/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_assignment_turned_in_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -33,9 +33,9 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="outputName" value="logout_black" />
+                                      <entry key="outputName" value="not_assign_gray" />
                                       <entry key="theme" value="CUSTOM" />
-                                      <entry key="themeColor" value="000000" />
+                                      <entry key="themeColor" value="7c7c7c" />
                                     </map>
                                   </option>
                                 </PersistentState>

@@ -24,6 +24,8 @@ import service.courier.app.dmcx.courierservice.Firebase.AppFirebase;
 import service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin.Clients;
 import service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin.Home;
 import service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin.Profile;
+import service.courier.app.dmcx.courierservice.Fragment.Fragments.Client.CHome;
+import service.courier.app.dmcx.courierservice.Fragment.Fragments.Client.Works;
 import service.courier.app.dmcx.courierservice.Fragment.Manager.AppFragmentManager;
 import service.courier.app.dmcx.courierservice.R;
 import service.courier.app.dmcx.courierservice.Variables.Vars;
@@ -76,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void signOutUser() {
         Vars.appFirebase.signOutUser();
+        Vars.localDB.clearDB();
         Vars.reset();
         startAuthActivity();
     }
@@ -94,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navigationView);
 
+        toolbar.setTitle("");
         setSupportActionBar(toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(instance, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
@@ -133,11 +137,11 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                             case R.id.homeCNI: {
-                                Toast.makeText(MainActivity.instance, "CLIENT HOME", Toast.LENGTH_SHORT).show();
+                                loadNavFragment("Home", 0, AppFragmentManager.fragmentContainer, new CHome(), CHome.TAG);
                                 break;
                             }
                             case R.id.workListCNI: {
-                                Toast.makeText(MainActivity.instance, "CLIENT WORK", Toast.LENGTH_SHORT).show();
+                                loadNavFragment("Works", 0, AppFragmentManager.fragmentContainer, new Works(), Works.TAG);
                                 break;
                             }
                             case R.id.profileCNI: {
@@ -158,12 +162,9 @@ public class MainActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             if (isUserAdmin) {
-                loadToolbarPosition(15);
-                AppFragmentManager.replace(MainActivity.instance, AppFragmentManager.fragmentMapContainer, new Home(), Home.TAG);
-                navigationView.setCheckedItem(R.id.homeANI);
+                loadNavFragment("", 15, AppFragmentManager.fragmentMapContainer, new Home(), Home.TAG);
             } else {
-                loadToolbarPosition(0);
-                Toast.makeText(MainActivity.instance, "CLIENT HOME", Toast.LENGTH_SHORT).show();
+                loadNavFragment("Home", 0, AppFragmentManager.fragmentContainer, new CHome(), CHome.TAG);
             }
         }
     }

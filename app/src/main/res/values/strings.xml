@@ -13,4 +13,7 @@
     <string name="admin_password">Admin Password</string>
     <string name="create">Create</string>
     <string name="cancel">Cancel</string>
+    <string name="yes">Yes</string>
+    <string name="do_you_want_to_assign_work_to_this_client">Do you want to assign work to this client?</string>
+    <string name="message">Message</string>
 </resources>

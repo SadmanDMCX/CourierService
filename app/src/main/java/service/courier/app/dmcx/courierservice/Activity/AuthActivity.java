@@ -1,6 +1,5 @@
 package service.courier.app.dmcx.courierservice.Activity;
 
-import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,6 +25,7 @@ import dmax.dialog.SpotsDialog;
 import service.courier.app.dmcx.courierservice.Dialog.AppDialog;
 import service.courier.app.dmcx.courierservice.Firebase.AFModel;
 import service.courier.app.dmcx.courierservice.Firebase.AppFirebase;
+import service.courier.app.dmcx.courierservice.LocalDatabase.LocalDB;
 import service.courier.app.dmcx.courierservice.R;
 import service.courier.app.dmcx.courierservice.Utility.AppValidator;
 import service.courier.app.dmcx.courierservice.Variables.Vars;
@@ -67,6 +67,7 @@ public class AuthActivity extends AppCompatActivity {
         instance = this;
         Vars.appFirebase = new AppFirebase();
         Vars.appDialog = new AppDialog();
+        Vars.localDB = new LocalDB(instance);
 
         signInCL = findViewById(R.id.signInCL);
         signUpCL = findViewById(R.id.signUpCL);
@@ -140,13 +141,15 @@ public class AuthActivity extends AppCompatActivity {
                 Vars.appFirebase.signInUser(email, passwd, new AppFirebase.FirebaseCallback() {
                     @Override
                     public void ProcessCallback(boolean isTaskCompleted) {
-                        spotsDialog.dismiss();
-
                         if (isTaskCompleted) {
                             Vars.appFirebase.isUserAdmin(new AppFirebase.FirebaseCallback() {
                                 @Override
                                 public void ProcessCallback(boolean isTaskCompleted) {
+                                    spotsDialog.dismiss();
+
                                     Vars.isUserAdmin = isTaskCompleted;
+                                    Vars.localDB.assignBooleanValue(Vars.PREFS_ISUSERADMIN, isTaskCompleted);
+                                    Toast.makeText(instance, "SIGNED IN", Toast.LENGTH_SHORT).show();
                                     startMainActivity();
                                 }
 
@@ -155,6 +158,8 @@ public class AuthActivity extends AppCompatActivity {
 
                                 }
                             });
+                        } else {
+                            spotsDialog.dismiss();
                         }
                     }
 
@@ -262,6 +267,7 @@ public class AuthActivity extends AppCompatActivity {
                                                     @Override
                                                     public void ProcessCallback(boolean isTaskCompleted) {
                                                         Vars.isUserAdmin = isTaskCompleted;
+                                                        Vars.localDB.assignBooleanValue(Vars.PREFS_ISUSERADMIN, isTaskCompleted);
                                                         startMainActivity();
                                                     }
 
@@ -304,18 +310,8 @@ public class AuthActivity extends AppCompatActivity {
         super.onStart();
 
         if (Vars.appFirebase.getCurrentUser() != null) {
-            Vars.appFirebase.isUserAdmin(new AppFirebase.FirebaseCallback() {
-                @Override
-                public void ProcessCallback(boolean isTaskCompleted) {
-                    Vars.isUserAdmin = isTaskCompleted;
-                    startMainActivity();
-                }
-
-                @Override
-                public void ExceptionCallback(String exception) {
-
-                }
-            });
+            Vars.isUserAdmin = Vars.localDB.retriveBooleanValue(Vars.PREFS_ISUSERADMIN);
+            startMainActivity();
         }
     }
 }

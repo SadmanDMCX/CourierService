@@ -1,6 +1,5 @@
 package service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin;
 
-import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -24,13 +23,10 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import dmax.dialog.SpotsDialog;
-import service.courier.app.dmcx.courierservice.Activity.AuthActivity;
 import service.courier.app.dmcx.courierservice.Activity.MainActivity;
 import service.courier.app.dmcx.courierservice.Firebase.AFModel;
 import service.courier.app.dmcx.courierservice.Firebase.AppFirebase;
@@ -53,20 +49,32 @@ public class Clients extends Fragment {
     private void loadRecyclerView() {
         clients = new ArrayList<>();
 
+        final AlertDialog sportsDialog = new SpotsDialog(MainActivity.instance, "Please wait...");
+        sportsDialog.show();
+
         DatabaseReference reference = Vars.appFirebase.getDbReference();
         reference.child(AFModel.users).child(AFModel.client).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
+                    if (!clients.isEmpty()) {
+                        clients.clear();
+                    }
+
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         Client client = snapshot.getValue(Client.class);
-                        clients.add(client);
+                        assert client != null;
+                        if (client.getAdmin_id().equals(Vars.appFirebase.getCurrentUser().getUid())) {
+                            clients.add(client);
+                        }
                     }
 
                     clientRecyclerViewAdapter = new ClientRecyclerViewAdapter(clients);
                     clientRecyclerViewAdapter.notifyDataSetChanged();
                     serviceManListRV.setAdapter(clientRecyclerViewAdapter);
                 }
+
+                sportsDialog.dismiss();
             }
 
             @Override
