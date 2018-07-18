@@ -1,8 +1,6 @@
 package service.courier.app.dmcx.courierservice.Firebase;
 
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -16,9 +14,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Map;
-import java.util.Objects;
-
-import service.courier.app.dmcx.courierservice.Activity.MainActivity;
 
 public class AppFirebase {
 
@@ -90,14 +85,14 @@ public class AppFirebase {
 
     public void isUserAdmin(final FirebaseCallback callback) {
         final String uid = mAuth.getCurrentUser().getUid();
-        mReference.child(AFModel.users).child(AFModel.admin).addListenerForSingleValueEvent(new ValueEventListener() {
+        mReference.child(AFModel.users).child(AFModel.admins).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.hasChild(uid)) {
                     callback.ProcessCallback(true);
                     callback.ExceptionCallback("");
                 } else {
-                    mReference.child(AFModel.users).child(AFModel.client).addListenerForSingleValueEvent(new ValueEventListener() {
+                    mReference.child(AFModel.users).child(AFModel.clients).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (dataSnapshot.hasChild(uid)) {
@@ -115,6 +110,10 @@ public class AppFirebase {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
+    }
+
+    public String getPushId() {
+        return mReference.push().getKey();
     }
 
 }

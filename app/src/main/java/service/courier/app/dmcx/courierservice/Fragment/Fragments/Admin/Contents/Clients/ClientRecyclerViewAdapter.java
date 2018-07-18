@@ -1,12 +1,14 @@
 package service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin.Contents.Clients;
 
 import android.app.AlertDialog;
+import android.app.TimePickerDialog;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,12 +19,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import dmax.dialog.SpotsDialog;
 import service.courier.app.dmcx.courierservice.Activity.MainActivity;
 import service.courier.app.dmcx.courierservice.Firebase.AFModel;
+import service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin.Home;
 import service.courier.app.dmcx.courierservice.Models.Client;
 import service.courier.app.dmcx.courierservice.R;
 import service.courier.app.dmcx.courierservice.Variables.Vars;
@@ -51,60 +56,57 @@ public class ClientRecyclerViewAdapter extends RecyclerView.Adapter<ClientRecycl
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final DatabaseReference reference =
-                        Vars.appFirebase.getDbReference().child(AFModel.users).child(AFModel.client)
-                                .child(currentClient.getId()).child(AFModel.work);
+                View dialogView = LayoutInflater.from(MainActivity.instance).inflate(R.layout.dialog_admin_clients_assign_work, null);
+                Vars.appDialog.create(MainActivity.instance, dialogView).show();
 
-                final AlertDialog spotsDialog = new SpotsDialog(MainActivity.instance, "Please wait...");
-                spotsDialog.show();
+                final EditText workTitleET = dialogView.findViewById(R.id.workTitleET);
+                final EditText workDescET = dialogView.findViewById(R.id.workDescET);
+                final Button assignBTN = dialogView.findViewById(R.id.assignBTN);
+                final Button cancelBTN = dialogView.findViewById(R.id.cancelBTN);
 
-                reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                cancelBTN.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        Object data = dataSnapshot.getValue();
-                        boolean isNothing = data.toString().isEmpty();
-                        spotsDialog.dismiss();
-
-                        if (isNothing) {
-                            View dialogView = LayoutInflater.from(MainActivity.instance).inflate(R.layout.dialog_admin_assign_work_to_client, null);
-                            Vars.appDialog.create(MainActivity.instance, dialogView).show();
-
-                            Button yesBTN = dialogView.findViewById(R.id.yesBTN);
-                            Button noBTN = dialogView.findViewById(R.id.noBTN);
-
-                            noBTN.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    Vars.appDialog.dismiss();
-                                }
-                            });
-
-                            yesBTN.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    Vars.appDialog.dismiss();
-                                    spotsDialog.show();
-
-                                    reference.setValue(Vars.TASK_CODE).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            spotsDialog.dismiss();
-
-                                            if (task.isSuccessful()) {
-                                                Toast.makeText(MainActivity.instance, "Task assigned successfully.", Toast.LENGTH_SHORT).show();
-                                            }
-                                        }
-                                    });
-                                }
-                            });
-                        }  else {
-                            Toast.makeText(MainActivity.instance, "Already task assigned!", Toast.LENGTH_SHORT).show();
-                        }
+                    public void onClick(View view) {
+                        Vars.appDialog.dismiss();
                     }
+                });
 
+                assignBTN.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                    public void onClick(View view) {
+                        final String title = workTitleET.getText().toString();
+                        final String desc = workDescET.getText().toString();
 
+                        if (title.equals("") || desc.equals("")) {
+                            Toast.makeText(MainActivity.instance, "Title & Description is needed!", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        Vars.appDialog.dismiss();
+
+                        final AlertDialog spotsDialog = new SpotsDialog(MainActivity.instance, "Please wait...");
+                        spotsDialog.show();
+
+                        Map<String, Object> map = new HashMap<>();
+                        map.put(AFModel.work_title, title);
+                        map.put(AFModel.work_description, desc);
+                        map.put(AFModel.work_status, AFModel.val_work_status_request);
+
+                        final DatabaseReference reference = Vars.appFirebase.getDbReference().child(AFModel.users)
+                                                                .child(AFModel.works).child(currentClient.getId());
+
+                        reference.push().setValue(map)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    spotsDialog.dismiss();
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(MainActivity.instance, "Work assigned!", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(MainActivity.instance, "Work can't assign! Contact with the developer.", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
                     }
                 });
             }

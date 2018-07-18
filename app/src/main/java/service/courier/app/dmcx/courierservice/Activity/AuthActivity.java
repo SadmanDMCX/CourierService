@@ -250,13 +250,14 @@ public class AuthActivity extends AppCompatActivity {
                                     map.put(AFModel.username, name);
                                     map.put(AFModel.phone_no, "");
                                     map.put(AFModel.status, "Online");
-                                    map.put(AFModel.current_location, "");
+                                    map.put(AFModel.lat, "");
+                                    map.put(AFModel.lon, "");
                                     map.put(AFModel.client_list, "");
                                     map.put(AFModel.created_at, System.currentTimeMillis());
                                     map.put(AFModel.modified_at, System.currentTimeMillis());
 
                                     DatabaseReference reference =
-                                            Vars.appFirebase.getDbReference().child(AFModel.users).child(AFModel.admin)
+                                            Vars.appFirebase.getDbReference().child(AFModel.users).child(AFModel.admins)
                                             .child(Vars.appFirebase.getCurrentUser().getUid());
 
                                     Vars.appFirebase.insert(reference, map, new AppFirebase.FirebaseCallback() {

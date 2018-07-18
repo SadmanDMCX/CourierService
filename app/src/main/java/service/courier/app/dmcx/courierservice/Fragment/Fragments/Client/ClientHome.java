@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 
 import service.courier.app.dmcx.courierservice.R;
 
-public class CHome extends Fragment {
+public class ClientHome extends Fragment {
 
     public static final String TAG = "CLIENT-HOME";
 

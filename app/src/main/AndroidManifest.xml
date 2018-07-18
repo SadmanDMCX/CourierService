@@ -19,15 +19,19 @@
             android:value="AIzaSyB1nh0ebCdPdhwAgFsqW55vDit04l66oSM" />
 
         <activity
-            android:name=".Activity.AuthActivity"
+            android:name=".Activity.SplashAcitivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AuthAppTheme.NoActionBar">
+            android:theme="@style/SplashAppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".Activity.AuthActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AuthAppTheme.NoActionBar" />
 
         <activity
             android:name=".Activity.MainActivity"

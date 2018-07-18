@@ -24,7 +24,7 @@ import service.courier.app.dmcx.courierservice.Firebase.AppFirebase;
 import service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin.Clients;
 import service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin.Home;
 import service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin.Profile;
-import service.courier.app.dmcx.courierservice.Fragment.Fragments.Client.CHome;
+import service.courier.app.dmcx.courierservice.Fragment.Fragments.Client.ClientHome;
 import service.courier.app.dmcx.courierservice.Fragment.Fragments.Client.Works;
 import service.courier.app.dmcx.courierservice.Fragment.Manager.AppFragmentManager;
 import service.courier.app.dmcx.courierservice.R;
@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                             case R.id.homeCNI: {
-                                loadNavFragment("Home", 0, AppFragmentManager.fragmentContainer, new CHome(), CHome.TAG);
+                                loadNavFragment("Home", 0, AppFragmentManager.fragmentContainer, new ClientHome(), ClientHome.TAG);
                                 break;
                             }
                             case R.id.workListCNI: {
@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
             if (isUserAdmin) {
                 loadNavFragment("", 15, AppFragmentManager.fragmentMapContainer, new Home(), Home.TAG);
             } else {
-                loadNavFragment("Home", 0, AppFragmentManager.fragmentContainer, new CHome(), CHome.TAG);
+                loadNavFragment("Home", 0, AppFragmentManager.fragmentContainer, new ClientHome(), ClientHome.TAG);
             }
         }
     }

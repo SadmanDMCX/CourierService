@@ -16,4 +16,10 @@
     <string name="yes">Yes</string>
     <string name="do_you_want_to_assign_work_to_this_client">Do you want to assign work to this client?</string>
     <string name="message">Message</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="assign">Assign</string>
+    <string name="create_work">Create Work</string>
+    <string name="no">No</string>
+    <string name="check_work_acceptence">Check Work Acceptence</string>
 </resources>

@@ -53,7 +53,7 @@ public class Clients extends Fragment {
         sportsDialog.show();
 
         DatabaseReference reference = Vars.appFirebase.getDbReference();
-        reference.child(AFModel.users).child(AFModel.client).addValueEventListener(new ValueEventListener() {
+        reference.child(AFModel.users).child(AFModel.clients).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -179,13 +179,13 @@ public class Clients extends Fragment {
                                                 map.put(AFModel.admin_id, adminId);
                                                 map.put(AFModel.phone_no, "");
                                                 map.put(AFModel.status, "Online");
-                                                map.put(AFModel.current_location, "");
-                                                map.put(AFModel.work, "");
+                                                map.put(AFModel.lat, "");
+                                                map.put(AFModel.lon, "");
                                                 map.put(AFModel.created_at, System.currentTimeMillis());
                                                 map.put(AFModel.modified_at, System.currentTimeMillis());
 
                                                 DatabaseReference reference =
-                                                        Vars.appFirebase.getDbReference().child(AFModel.users).child(AFModel.client)
+                                                        Vars.appFirebase.getDbReference().child(AFModel.users).child(AFModel.clients)
                                                         .child(Vars.appFirebase.getCurrentUser().getUid());
 
                                                 Vars.appFirebase.insert(reference, map, new AppFirebase.FirebaseCallback() {
