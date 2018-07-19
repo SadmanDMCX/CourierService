@@ -9,11 +9,11 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import service.courier.app.dmcx.courierservice.Activity.MainActivity;
 import service.courier.app.dmcx.courierservice.Fragment.Fragments.Client.Contents.Works.BottomNavigationView.AcceptedWorksFragment;
 import service.courier.app.dmcx.courierservice.Fragment.Fragments.Client.Contents.Works.BottomNavigationView.PendingWorksFragment;
+import service.courier.app.dmcx.courierservice.Fragment.Manager.AppFragmentManager;
 import service.courier.app.dmcx.courierservice.R;
 
 public class Works extends Fragment {
@@ -34,19 +34,11 @@ public class Works extends Fragment {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.pendingWorksBNI: {
-                        Toast.makeText(MainActivity.instance, "PENDING", Toast.LENGTH_SHORT).show();
-                        MainActivity.instance.getSupportFragmentManager().beginTransaction()
-                                .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                                .replace(R.id.fragmentContainerBNV, new PendingWorksFragment(), PendingWorksFragment.TAG)
-                                .commit();
+                        AppFragmentManager.replace(MainActivity.instance, R.id.fragmentContainerBNV, new PendingWorksFragment());
                         break;
                     }
                     case R.id.acceptedWorksBNI: {
-                        Toast.makeText(MainActivity.instance, "ACCEPT", Toast.LENGTH_SHORT).show();
-                        MainActivity.instance.getSupportFragmentManager().beginTransaction()
-                                .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                                .replace(R.id.fragmentContainerBNV, new AcceptedWorksFragment(), AcceptedWorksFragment.TAG)
-                                .commit();
+                        AppFragmentManager.replace(MainActivity.instance, R.id.fragmentContainerBNV, new AcceptedWorksFragment());
                         break;
                     }
                 }
@@ -55,11 +47,7 @@ public class Works extends Fragment {
             }
         });
 
-        MainActivity.instance.getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                .replace(R.id.fragmentContainerBNV, new PendingWorksFragment(), PendingWorksFragment.TAG)
-                .commit();
-
+        AppFragmentManager.replace(MainActivity.instance, R.id.fragmentContainerBNV, new PendingWorksFragment());
         return view;
     }
 }

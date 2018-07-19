@@ -47,7 +47,7 @@ public class ClientRecyclerViewAdapter extends RecyclerView.Adapter<ClientRecycl
     }
 
     @Override
-    public void onBindViewHolder(ClientRecyclerViewAdapter.ClientRecyclerViewHolder holder, int position) {
+    public void onBindViewHolder(ClientRecyclerViewAdapter.ClientRecyclerViewHolder holder, final int position) {
         holder.clientNameTV.setText(clients.get(position).getName());
         holder.clientStatusTV.setText(clients.get(position).getStatus());
 
@@ -87,15 +87,18 @@ public class ClientRecyclerViewAdapter extends RecyclerView.Adapter<ClientRecycl
                         final AlertDialog spotsDialog = new SpotsDialog(MainActivity.instance, "Please wait...");
                         spotsDialog.show();
 
+                        final DatabaseReference reference = Vars.appFirebase.getDbReference().child(AFModel.users)
+                                .child(AFModel.works).child(currentClient.getId());
+                        String pushId = reference.push().getKey();
+
                         Map<String, Object> map = new HashMap<>();
+                        map.put(AFModel.work_id, pushId);
                         map.put(AFModel.work_title, title);
                         map.put(AFModel.work_description, desc);
                         map.put(AFModel.work_status, AFModel.val_work_status_request);
 
-                        final DatabaseReference reference = Vars.appFirebase.getDbReference().child(AFModel.users)
-                                                                .child(AFModel.works).child(currentClient.getId());
-
-                        reference.push().setValue(map)
+                        assert pushId != null;
+                        reference.child(pushId).setValue(map)
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {

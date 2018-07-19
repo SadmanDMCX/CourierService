@@ -39,4 +39,11 @@ public class AppFragmentManager {
         Vars.currentFragment = fragment;
     }
 
+    public static void replace(AppCompatActivity appCompatActivity, int container, Fragment fragment) {
+        appCompatActivity.getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                .replace(container, fragment)
+                .commit();
+    }
+
 }

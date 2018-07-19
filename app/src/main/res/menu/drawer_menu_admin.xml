@@ -15,6 +15,11 @@
             android:icon="@drawable/list_black"
             />
         <item
+            android:id="@+id/worksANI"
+            android:title="Works"
+            android:icon="@drawable/task_black"
+            />
+        <item
             android:id="@+id/profileANI"
             android:title="Profile"
             android:icon="@drawable/profile_black"

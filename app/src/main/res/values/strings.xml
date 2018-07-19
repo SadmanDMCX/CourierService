@@ -22,4 +22,10 @@
     <string name="create_work">Create Work</string>
     <string name="no">No</string>
     <string name="check_work_acceptence">Check Work Acceptence</string>
+    <string name="new_work">New Work</string>
+    <string name="work_description">Work description</string>
+    <string name="accept">Accept</string>
+    <string name="deny">Deny</string>
+    <string name="done">Done</string>
+    <string name="notdone">Not Done</string>
 </resources>

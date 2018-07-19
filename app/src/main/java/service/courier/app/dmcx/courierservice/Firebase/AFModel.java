@@ -22,6 +22,7 @@ public class AFModel {
     public static final String lat = "latitude";
     public static final String lon = "longitude";
 
+    public static final String work_id = "work_id";
     public static final String work_title = "work_title";
     public static final String work_description = "work_description";
     public static final String work_status = "work_status";
@@ -29,6 +30,8 @@ public class AFModel {
     public static final String val_work_status_request = "request";
     public static final String val_work_status_accept = "accept";
     public static final String val_work_status_deny = "deny";
+    public static final String val_work_status_not_done = "not done";
+    public static final String val_work_status_done= "done";
 
 
 }

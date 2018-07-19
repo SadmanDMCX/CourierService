@@ -13,7 +13,7 @@
         <item
             android:id="@+id/workListCNI"
             android:title="Work List"
-            android:icon="@drawable/list_black"
+            android:icon="@drawable/task_black"
             />
         <item
             android:id="@+id/profileCNI"

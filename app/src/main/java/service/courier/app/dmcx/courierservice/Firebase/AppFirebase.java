@@ -83,6 +83,21 @@ public class AppFirebase {
         });
     }
 
+    public void check(DatabaseReference reference, final FirebaseCallback callback) {
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                callback.ProcessCallback(dataSnapshot.getValue() != null);
+                callback.ExceptionCallback("");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     public void isUserAdmin(final FirebaseCallback callback) {
         final String uid = mAuth.getCurrentUser().getUid();
         mReference.child(AFModel.users).child(AFModel.admins).addListenerForSingleValueEvent(new ValueEventListener() {

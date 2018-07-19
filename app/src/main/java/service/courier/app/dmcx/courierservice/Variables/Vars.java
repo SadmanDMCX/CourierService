@@ -13,6 +13,7 @@ public class Vars {
 
     public static final String PREFS_NAME = "CourierServiceAppLocalDB";
     public static final String PREFS_ISUSERADMIN = "IsUserIsAdmin";
+    public static final String APPTAG = "CSAppTag";
 
     public static AppFirebase appFirebase;
     public static AppDialog appDialog;

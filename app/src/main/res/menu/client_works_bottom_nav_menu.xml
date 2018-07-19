@@ -5,13 +5,13 @@
         <item
             android:id="@+id/pendingWorksBNI"
             android:title="Pending Works"
-            android:icon="@drawable/pending_white"
+            android:icon="@drawable/pending_black"
             />
 
         <item
             android:id="@+id/acceptedWorksBNI"
             android:title="Accept Works"
-            android:icon="@drawable/task_white"
+            android:icon="@drawable/task_black"
             />
     </group>
 

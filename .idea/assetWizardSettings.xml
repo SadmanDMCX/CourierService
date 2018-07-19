@@ -35,9 +35,9 @@
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
                                       <entry key="imageAsset" value="E:\Downloads\Pictures\Courier Service App - Android\clipboard.png" />
-                                      <entry key="outputName" value="task_white" />
+                                      <entry key="outputName" value="task_black" />
                                       <entry key="theme" value="CUSTOM" />
-                                      <entry key="themeColor" value="ffffff" />
+                                      <entry key="themeColor" value="000000" />
                                     </map>
                                   </option>
                                 </PersistentState>
