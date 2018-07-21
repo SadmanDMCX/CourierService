@@ -127,8 +127,4 @@ public class AppFirebase {
         });
     }
 
-    public String getPushId() {
-        return mReference.push().getKey();
-    }
-
 }

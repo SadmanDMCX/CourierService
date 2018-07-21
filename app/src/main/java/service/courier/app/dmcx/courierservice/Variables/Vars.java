@@ -9,7 +9,6 @@ import service.courier.app.dmcx.courierservice.LocalDatabase.LocalDB;
 public class Vars {
 
     public static final String SECURITY_CODE = "SADMAN";
-    public static final String TASK_CODE = "task-new-111123jkajsdahsd";
 
     public static final String PREFS_NAME = "CourierServiceAppLocalDB";
     public static final String PREFS_ISUSERADMIN = "IsUserIsAdmin";

@@ -66,7 +66,6 @@ public class AcceptedWorksFragment extends Fragment {
                                 works.add(work);
                             }
 
-                            Log.d(Vars.APPTAG, "onChildAdded: " + works.get(0).getId());
                             acceptedWorksRecyclerViewAdapter = new AcceptedWorksRecyclerViewAdapter(works);
                             acceptedWorksRecyclerViewAdapter.notifyDataSetChanged();
                             acceptedWorksRV.setAdapter(acceptedWorksRecyclerViewAdapter);

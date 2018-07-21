@@ -3,6 +3,7 @@ package service.courier.app.dmcx.courierservice.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -16,7 +17,12 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +32,7 @@ import service.courier.app.dmcx.courierservice.Dialog.AppDialog;
 import service.courier.app.dmcx.courierservice.Firebase.AFModel;
 import service.courier.app.dmcx.courierservice.Firebase.AppFirebase;
 import service.courier.app.dmcx.courierservice.LocalDatabase.LocalDB;
+import service.courier.app.dmcx.courierservice.Models.Admin;
 import service.courier.app.dmcx.courierservice.R;
 import service.courier.app.dmcx.courierservice.Utility.AppValidator;
 import service.courier.app.dmcx.courierservice.Variables.Vars;
@@ -48,6 +55,8 @@ public class AuthActivity extends AppCompatActivity {
     private Animation aslideDownToPosition;
     private Animation aslidePositionToDown;
 
+    private HashMap<String, String> admins;
+
     private void loadAnimations() {
         aslideDownToPosition = AnimationUtils.loadAnimation(AuthActivity.instance, R.anim.slide_down_to_position);
         aslidePositionToDown = AnimationUtils.loadAnimation(AuthActivity.instance, R.anim.slide_position_to_down);
@@ -57,6 +66,40 @@ public class AuthActivity extends AppCompatActivity {
         Intent intent = new Intent(AuthActivity.instance, MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    private void loadAdminDetails() {
+        admins = new HashMap<>();
+
+        final AlertDialog spotsDialog = new SpotsDialog(instance, "Checking availablity...");
+        spotsDialog.show();
+
+        DatabaseReference reference = Vars.appFirebase.getDbReference().child(AFModel.users).child(AFModel.admins);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (!admins.isEmpty()) {
+                    admins.clear();
+                }
+
+                @SuppressWarnings("unchecked")
+                Map<String, Admin> adminMap = (Map<String, Admin>) dataSnapshot.getValue();
+                for (Map.Entry<String, Admin> entry : adminMap.entrySet()) {
+                    Map singleAdminMap = (Map) entry.getValue();
+                    String singleAdminMapKey = entry.getKey();
+                    String singleAdminMapValue = (String) singleAdminMap.get(AFModel.username);
+
+                    admins.put(singleAdminMapKey, singleAdminMapValue);
+                }
+
+                spotsDialog.dismiss();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override
@@ -99,6 +142,8 @@ public class AuthActivity extends AppCompatActivity {
 
                     signInCL.setVisibility(View.GONE);
                     signUpCL.setVisibility(View.VISIBLE);
+
+                    loadAdminDetails();
                 } else {
                     emailSIET.setAnimation(aslideDownToPosition);
                     passwordSIET.setAnimation(aslideDownToPosition);
@@ -149,8 +194,36 @@ public class AuthActivity extends AppCompatActivity {
 
                                     Vars.isUserAdmin = isTaskCompleted;
                                     Vars.localDB.assignBooleanValue(Vars.PREFS_ISUSERADMIN, isTaskCompleted);
-                                    Toast.makeText(instance, "SIGNED IN", Toast.LENGTH_SHORT).show();
-                                    startMainActivity();
+
+                                    if (isTaskCompleted) {
+                                        DatabaseReference reference = Vars.appFirebase.getDbReference().child(AFModel.users).child(AFModel.admins).child(Vars.appFirebase.getCurrentUser().getUid());
+                                        Map<String, Object> map = new HashMap<>();
+                                        map.put(AFModel.status, AFModel.val_status_online);
+                                        reference.updateChildren(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    startMainActivity();
+                                                } else {
+                                                    Toast.makeText(instance, "Online Error!", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        });
+                                    } else {
+                                        DatabaseReference reference = Vars.appFirebase.getDbReference().child(AFModel.users).child(AFModel.clients).child(Vars.appFirebase.getCurrentUser().getUid());
+                                        Map<String, Object> map = new HashMap<>();
+                                        map.put(AFModel.status, AFModel.val_status_online);
+                                        reference.updateChildren(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    startMainActivity();
+                                                } else {
+                                                    Toast.makeText(instance, "Online Error!", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        });
+                                    }
                                 }
 
                                 @Override
@@ -204,6 +277,15 @@ public class AuthActivity extends AppCompatActivity {
                     return;
                 }
 
+                if (!admins.isEmpty()) {
+                    for (Map.Entry<String, String> admin : admins.entrySet()) {
+                        if (admin.getValue().equals(name)) {
+                            Toast.makeText(instance, "Name is already exists!", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    }
+                }
+
                 // Sign up main
                 View dialogView = LayoutInflater.from(AuthActivity.instance).inflate(R.layout.dialog_signup_security_code, null);
                 Vars.appDialog.create(AuthActivity.instance, dialogView);
@@ -247,12 +329,12 @@ public class AuthActivity extends AppCompatActivity {
                                 if (isTaskCompleted) {
                                     Map<String, Object> map = new HashMap<>();
                                     map.put(AFModel.image_path, "");
+                                    map.put(AFModel.id, Vars.appFirebase.getCurrentUser().getUid());
                                     map.put(AFModel.username, name);
                                     map.put(AFModel.phone_no, "");
-                                    map.put(AFModel.status, "Online");
-                                    map.put(AFModel.lat, "");
-                                    map.put(AFModel.lon, "");
-                                    map.put(AFModel.client_list, "");
+                                    map.put(AFModel.status, AFModel.val_status_online);
+                                    map.put(AFModel.latitude, "");
+                                    map.put(AFModel.longitude, "");
                                     map.put(AFModel.created_at, System.currentTimeMillis());
                                     map.put(AFModel.modified_at, System.currentTimeMillis());
 

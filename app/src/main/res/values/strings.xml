@@ -28,4 +28,5 @@
     <string name="deny">Deny</string>
     <string name="done">Done</string>
     <string name="notdone">Not Done</string>
+    <string name="nav_header_bg">Nav header bg</string>
 </resources>

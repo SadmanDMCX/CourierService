@@ -1,7 +1,5 @@
 package service.courier.app.dmcx.courierservice.Models;
 
-import java.util.List;
-
 public class Admin {
 
     private String image_path;
@@ -9,11 +7,10 @@ public class Admin {
     private String name;
     private String phone_no;
     private String status;
-    private String lat;
-    private String lon;
-    private String created_at;
-    private String modified_at;
-    private List<Client> clientList;
+    private String latitude;
+    private String longitude;
+    private long created_at;
+    private long modified_at;
 
     public String getImage_path() {
         return image_path;
@@ -35,23 +32,19 @@ public class Admin {
         return status;
     }
 
-    public String getLat() {
-        return lat;
+    public String getLatitude() {
+        return latitude;
     }
 
-    public String getLon() {
-        return lon;
+    public String getLongitude() {
+        return longitude;
     }
 
-    public String getCreated_at() {
+    public long getCreated_at() {
         return created_at;
     }
 
-    public String getModified_at() {
+    public long getModified_at() {
         return modified_at;
-    }
-
-    public List<Client> getClientList() {
-        return clientList;
     }
 }

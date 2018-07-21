@@ -8,8 +8,8 @@ public class Client {
     private String admin_id;
     private String phone_no;
     private String status;
-    private String lat;
-    private String lon;
+    private String latitude;
+    private String longitude;
     private long created_at;
     private long modified_at;
 
@@ -33,12 +33,12 @@ public class Client {
         return phone_no;
     }
 
-    public String getLat() {
-        return lat;
+    public String getLatitude() {
+        return latitude;
     }
 
-    public String getLon() {
-        return lon;
+    public String getLongitude() {
+        return longitude;
     }
 
     public String getStatus() {

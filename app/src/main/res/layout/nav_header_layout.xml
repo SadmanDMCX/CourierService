@@ -15,9 +15,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        />
+        android:contentDescription="@string/nav_header_bg" />
 
     <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/navHeaderUserCIV"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginBottom="8dp"
@@ -31,7 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="Md. Sadman"
+        android:text="@string/name"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toTopOf="@+id/developerMail"
         app:layout_constraintStart_toStartOf="parent" />
@@ -42,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginStart="16dp"
-        android:text="md.sadman.shams@gmail.com"
+        android:text="@string/email"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

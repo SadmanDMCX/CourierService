@@ -45,9 +45,11 @@ public class Clients extends Fragment {
     private ClientRecyclerViewAdapter clientRecyclerViewAdapter;
 
     private List<Client> clients;
+    private List<String> usernames;
 
     private void loadRecyclerView() {
         clients = new ArrayList<>();
+        usernames = new ArrayList<>();
 
         final AlertDialog sportsDialog = new SpotsDialog(MainActivity.instance, "Please wait...");
         sportsDialog.show();
@@ -60,12 +62,16 @@ public class Clients extends Fragment {
                     if (!clients.isEmpty()) {
                         clients.clear();
                     }
+                    if (!usernames.isEmpty()) {
+                        usernames.clear();
+                    }
 
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         Client client = snapshot.getValue(Client.class);
                         assert client != null;
                         if (client.getAdmin_id().equals(Vars.appFirebase.getCurrentUser().getUid())) {
                             clients.add(client);
+                            usernames.add(client.getName());
                         }
                     }
 
@@ -158,6 +164,13 @@ public class Clients extends Fragment {
                             return;
                         }
 
+                        for (String username : usernames) {
+                            if (username.equals(name)) {
+                                Toast.makeText(MainActivity.instance, "Name is already exists! Name must be uncommon.", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        }
+
                         final AlertDialog spotsDialog = new SpotsDialog(MainActivity.instance, "Please wait...");
                         spotsDialog.show();
 
@@ -178,9 +191,9 @@ public class Clients extends Fragment {
                                                 map.put(AFModel.username, name);
                                                 map.put(AFModel.admin_id, adminId);
                                                 map.put(AFModel.phone_no, "");
-                                                map.put(AFModel.status, "Online");
-                                                map.put(AFModel.lat, "");
-                                                map.put(AFModel.lon, "");
+                                                map.put(AFModel.status, AFModel.val_status_online);
+                                                map.put(AFModel.latitude, "");
+                                                map.put(AFModel.longitude, "");
                                                 map.put(AFModel.created_at, System.currentTimeMillis());
                                                 map.put(AFModel.modified_at, System.currentTimeMillis());
 
