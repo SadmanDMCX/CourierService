@@ -97,9 +97,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void signOutUser() {
         if (Vars.isUserAdmin) {
-            signOutAdmin();
+            Map<String, Object> map = new HashMap<>();
+            map.put(AFModel.status, AFModel.val_status_offline);
+            signOutMethod(AFModel.admins, map);
         } else {
-            signOutClient();
+            Map<String, Object> map = new HashMap<>();
+            map.put(AFModel.latitude, "");
+            map.put(AFModel.longitude, "");
+            map.put(AFModel.status, AFModel.val_status_offline);
+            signOutMethod(AFModel.clients, map);
         }
 
         Vars.appFirebase.signOutUser();
@@ -108,28 +114,8 @@ public class MainActivity extends AppCompatActivity {
         startAuthActivity();
     }
 
-    private void signOutAdmin() {
-        DatabaseReference reference = Vars.appFirebase.getDbReference().child(AFModel.users).child(AFModel.admins).child(Vars.appFirebase.getCurrentUser().getUid());
-        Map<String, Object> map = new HashMap<>();
-        map.put(AFModel.status, AFModel.val_status_offline);
-        reference.updateChildren(map).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    Toast.makeText(instance, "You are now offline!", Toast.LENGTH_SHORT).show();
-                } else {
-                    Log.d(Vars.APPTAG, "ExceptionCallback: " + task.getException().getMessage());
-                }
-            }
-        });
-    }
-
-    private void signOutClient() {
-        DatabaseReference reference = Vars.appFirebase.getDbReference().child(AFModel.users).child(AFModel.clients).child(Vars.appFirebase.getCurrentUser().getUid());
-        Map<String, Object> map = new HashMap<>();
-        map.put(AFModel.latitude, "");
-        map.put(AFModel.longitude, "");
-        map.put(AFModel.status, AFModel.val_status_offline);
+    private void signOutMethod(String user, Map<String, Object> map) {
+        DatabaseReference reference = Vars.appFirebase.getDbReference().child(AFModel.users).child(user).child(Vars.appFirebase.getCurrentUser().getUid());
         reference.updateChildren(map).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
