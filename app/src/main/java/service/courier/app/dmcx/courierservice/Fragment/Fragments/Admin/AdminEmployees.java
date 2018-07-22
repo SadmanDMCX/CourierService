@@ -140,7 +140,7 @@ public class AdminEmployees extends Fragment {
                                 super.onDismissed(transientBottomBar, event);
 
                                 if (isDeleteSuccess[0]) {
-                                    final DatabaseReference reference = Vars.appFirebase.getDbEmployeesReference().child(Vars.appFirebase.getCurrentUserId()).child(employee.getId());
+                                    final DatabaseReference reference = Vars.appFirebase.getDbEmployeesReference().child(employee.getId());
                                     reference.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
