@@ -67,6 +67,10 @@ public class AppFirebase {
         mAuth.signOut();
     }
 
+    public FirebaseAuth getFirebaseAuth() {
+        return mAuth;
+    }
+
     public DatabaseReference getDbReference() {
         return mReference;
     }

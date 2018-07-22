@@ -12,6 +12,16 @@ public class Client {
     private String longitude;
     private long created_at;
     private long modified_at;
+    private String email;
+    private String password;
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
 
     public String getImage_path() {
         return image_path;

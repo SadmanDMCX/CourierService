@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/adminClientWorkCL"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/noDataFoundTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_data_found"
+        android:textSize="26sp"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/adminClientWorkListRV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/deleteAllFAB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="20dp"
+        android:src="@drawable/trash_white"
+        app:fabSize="normal"
+        app:backgroundTint="@color/colorPrimaryDark"
+        />
+
+</android.support.design.widget.CoordinatorLayout>

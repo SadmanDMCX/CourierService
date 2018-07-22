@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 
 import service.courier.app.dmcx.courierservice.R;
 
-public class Profile extends Fragment {
+public class AdminProfile extends Fragment {
 
     public static final String TAG = "ADMIN-PROFILE";
 

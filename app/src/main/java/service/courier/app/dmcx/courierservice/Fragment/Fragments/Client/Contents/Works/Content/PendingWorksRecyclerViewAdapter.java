@@ -43,7 +43,7 @@ public class PendingWorksRecyclerViewAdapter extends RecyclerView.Adapter<Pendin
 
     @Override
     public WorkRecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(MainActivity.instance).inflate(R.layout.layout_client_works_single_pending_work, parent, false);
+        View view = LayoutInflater.from(MainActivity.instance).inflate(R.layout.layout_single_client_works_pending_work, parent, false);
         return new WorkRecyclerViewHolder(view);
     }
 

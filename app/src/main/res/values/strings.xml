@@ -10,7 +10,6 @@
     <string name="sign_up">Sign Up</string>
     <string name="top">top</string>
     <string name="create_new_client">Create New Client</string>
-    <string name="admin_password">Admin Password</string>
     <string name="create">Create</string>
     <string name="cancel">Cancel</string>
     <string name="yes">Yes</string>
@@ -29,4 +28,14 @@
     <string name="done">Done</string>
     <string name="notdone">Not Done</string>
     <string name="nav_header_bg">Nav header bg</string>
+    <string name="no_of_work">No of Work</string>
+    <string name="work_image">Work Image</string>
+    <string name="work_status_accept">Work Status: Accept</string>
+    <string name="work_logo">Work Logo</string>
+    <string name="close_dialog">Close Dialog</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="confirm">Confirm</string>
+    <string name="no_data_found">No Data Found!</string>
+    <string name="admin_email">Admin Email</string>
+    <string name="admin_password">Admin Password</string>
 </resources>

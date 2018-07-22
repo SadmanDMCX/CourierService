@@ -18,23 +18,12 @@
                                 <PersistentState>
                                   <option name="children">
                                     <map>
-                                      <entry key="clipArt">
-                                        <value>
-                                          <PersistentState>
-                                            <option name="values">
-                                              <map>
-                                                <entry key="paddingPercent" value="10" />
-                                              </map>
-                                            </option>
-                                          </PersistentState>
-                                        </value>
-                                      </entry>
                                       <entry key="clipartAsset">
                                         <value>
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="url" value="jar:file:/H:/Android/Android%20Studio%203.1.1/plugins/android/lib/android.jar!/images/material_design_icons/device/ic_gps_fixed_black_24dp.xml" />
+                                                <entry key="url" value="jar:file:/H:/Android/Android%20Studio%203.1.1/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_delete_forever_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -45,9 +34,9 @@
                                   <option name="values">
                                     <map>
                                       <entry key="imageAsset" value="E:\Downloads\Pictures\Courier Service App - Android\clipboard.png" />
-                                      <entry key="outputName" value="gps_gray" />
+                                      <entry key="outputName" value="trash_white" />
                                       <entry key="theme" value="CUSTOM" />
-                                      <entry key="themeColor" value="838383" />
+                                      <entry key="themeColor" value="ffffff" />
                                     </map>
                                   </option>
                                 </PersistentState>

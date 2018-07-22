@@ -16,7 +16,7 @@ import service.courier.app.dmcx.courierservice.Fragment.Fragments.Client.Content
 import service.courier.app.dmcx.courierservice.Fragment.Manager.AppFragmentManager;
 import service.courier.app.dmcx.courierservice.R;
 
-public class Works extends Fragment {
+public class ClientWorks extends Fragment {
 
     public static final String TAG = "CLIENT-WORKS";
 

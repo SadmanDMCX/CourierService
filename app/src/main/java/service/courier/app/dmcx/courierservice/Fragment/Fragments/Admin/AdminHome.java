@@ -51,7 +51,7 @@ import service.courier.app.dmcx.courierservice.Models.Client;
 import service.courier.app.dmcx.courierservice.R;
 import service.courier.app.dmcx.courierservice.Variables.Vars;
 
-public class Home extends Fragment implements OnMapReadyCallback, LocationListener {
+public class AdminHome extends Fragment implements OnMapReadyCallback, LocationListener {
 
     public static final String TAG = "ADMIN-HOME";
 

@@ -11,8 +11,8 @@
             android:icon="@drawable/home_black"
             />
         <item
-            android:id="@+id/workListCNI"
-            android:title="Work List"
+            android:id="@+id/worksCNI"
+            android:title="Works"
             android:icon="@drawable/task_black"
             />
         <item

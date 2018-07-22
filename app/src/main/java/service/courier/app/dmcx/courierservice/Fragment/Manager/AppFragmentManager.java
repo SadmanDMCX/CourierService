@@ -1,5 +1,6 @@
 package service.courier.app.dmcx.courierservice.Fragment.Manager;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -31,6 +32,18 @@ public class AppFragmentManager {
     public static void replace(AppCompatActivity appCompatActivity, int container, Fragment fragment, String tag) {
         swichFragmentContiner(appCompatActivity, container);
 
+        appCompatActivity.getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                .replace(container, fragment, tag)
+                .commit();
+
+        Vars.currentFragment = fragment;
+    }
+
+    public static void replace(AppCompatActivity appCompatActivity, int container, Fragment fragment, String tag, Bundle bundle) {
+        swichFragmentContiner(appCompatActivity, container);
+
+        fragment.setArguments(bundle);
         appCompatActivity.getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                 .replace(container, fragment, tag)

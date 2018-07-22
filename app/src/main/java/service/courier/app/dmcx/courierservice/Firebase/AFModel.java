@@ -15,9 +15,10 @@ public class AFModel {
     public static final String status = "status";
     public static final String created_at = "created_at";
     public static final String modified_at = "modified_at";
-    public static final String client_list = "client_list";
     public static final String admin_id = "admin_id";
     public static final String id = "id";
+    public static final String email = "email";
+    public static final String password = "password";
 
     public static final String latitude = "latitude";
     public static final String longitude = "longitude";
