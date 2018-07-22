@@ -61,7 +61,6 @@ import service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin.AdminWor
 import service.courier.app.dmcx.courierservice.Fragment.Fragments.Employee.EmployeeHome;
 import service.courier.app.dmcx.courierservice.Fragment.Fragments.Employee.EmployeeWorks;
 import service.courier.app.dmcx.courierservice.Fragment.Manager.AppFragmentManager;
-import service.courier.app.dmcx.courierservice.Interface.BaseOnCompleteCallback;
 import service.courier.app.dmcx.courierservice.Models.Admin;
 import service.courier.app.dmcx.courierservice.Models.Employee;
 import service.courier.app.dmcx.courierservice.Variables.Vars;
