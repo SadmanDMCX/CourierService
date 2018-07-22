@@ -1,6 +1,7 @@
-package service.courier.app.dmcx.courierservice.Fragment.Fragments.Client.Contents.Works.Content;
+package service.courier.app.dmcx.courierservice.Fragment.Fragments.Employee.Contents.Works.Content;
 
 import android.annotation.SuppressLint;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,20 +24,17 @@ import java.util.Map;
 
 import service.courier.app.dmcx.courierservice.Activity.MainActivity;
 import service.courier.app.dmcx.courierservice.Firebase.AFModel;
-import service.courier.app.dmcx.courierservice.Fragment.Fragments.Client.Contents.Works.BottomNavigationView.AcceptedWorksFragment;
-import service.courier.app.dmcx.courierservice.Fragment.Fragments.Client.Contents.Works.BottomNavigationView.PendingWorksFragment;
+import service.courier.app.dmcx.courierservice.Fragment.Fragments.Employee.Contents.Works.BottomNavigationView.AcceptedWorksFragment;
+import service.courier.app.dmcx.courierservice.Fragment.Fragments.Employee.Contents.Works.BottomNavigationView.PendingWorksFragment;
 import service.courier.app.dmcx.courierservice.Models.Work;
 import service.courier.app.dmcx.courierservice.R;
+import service.courier.app.dmcx.courierservice.Utility.AppAnimation;
+import service.courier.app.dmcx.courierservice.Utility.AppUtils;
 import service.courier.app.dmcx.courierservice.Variables.Vars;
 
 public class PendingWorksRecyclerViewAdapter extends RecyclerView.Adapter<PendingWorksRecyclerViewAdapter.WorkRecyclerViewHolder> {
 
     private List<Work> works;
-
-    private void loadParams() {
-        PendingWorksFragment.reload();
-        AcceptedWorksFragment.reload();
-    }
 
     public PendingWorksRecyclerViewAdapter(List<Work> works) {
         this.works = works;
@@ -43,17 +42,20 @@ public class PendingWorksRecyclerViewAdapter extends RecyclerView.Adapter<Pendin
 
     @Override
     public WorkRecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(MainActivity.instance).inflate(R.layout.layout_single_client_works_pending_work, parent, false);
+        View view = LayoutInflater.from(MainActivity.instance).inflate(R.layout.layout_single_employee_works_pending_work, parent, false);
         return new WorkRecyclerViewHolder(view);
     }
 
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(final WorkRecyclerViewHolder holder, int position) {
-        final int currentPosition = position;
 
-        holder.taskTitleTV.setText(works.get(position).getWork_title());
-        holder.taskDescTV.setText(works.get(position).getWork_description());
+        final String title = works.get(position).getWork_title();
+        final String status = AppUtils.FirstLetterCapital(works.get(position).getWork_status());
+        final String desc = works.get(position).getWork_description();
+
+        holder.taskTitleTV.setText(title);
+        holder.taskDescTV.setText(desc);
 
         final DatabaseReference reference = Vars.appFirebase.getDbReference().child(AFModel.users).child(AFModel.works)
                 .child(Vars.appFirebase.getCurrentUser().getUid()).child(works.get(position).getWork_id());
@@ -69,7 +71,6 @@ public class PendingWorksRecyclerViewAdapter extends RecyclerView.Adapter<Pendin
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             Toast.makeText(MainActivity.instance, "Work accepted!", Toast.LENGTH_SHORT).show();
-                            loadParams();
                         } else {
                             Log.d(Vars.APPTAG, "Error Accept Work: " + task.getException().getMessage());
                         }
@@ -88,7 +89,6 @@ public class PendingWorksRecyclerViewAdapter extends RecyclerView.Adapter<Pendin
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             Toast.makeText(MainActivity.instance, "Work denied!", Toast.LENGTH_SHORT).show();
-                            loadParams();
                         } else {
                             Log.d(Vars.APPTAG, "Error Deny Work: " + task.getException().getMessage());
                         }
@@ -101,6 +101,38 @@ public class PendingWorksRecyclerViewAdapter extends RecyclerView.Adapter<Pendin
             @Override
             public void onClick(View view) {
                 Toast.makeText(MainActivity.instance, "New work assigned!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                View dialogView = LayoutInflater.from(MainActivity.instance).inflate(R.layout.dialog_admin_work_employee_work_detail, null);
+                Vars.appDialog.create(MainActivity.instance, dialogView).transparent();
+                Vars.appDialog.show();
+
+                final ImageButton closeDialogIB = dialogView.findViewById(R.id.closeDialogIB);
+                TextView dWorkTitleTV = dialogView.findViewById(R.id.dWorkTitleTV);
+                TextView dWorkStatus = dialogView.findViewById(R.id.dWorkStatus);
+                TextView dWorkDescTV = dialogView.findViewById(R.id.dWorkDescTV);
+
+                dWorkTitleTV.setText(title);
+                dWorkStatus.setText("Status: " + status);
+                dWorkDescTV.setText(desc);
+
+                AppAnimation.rotateAnimationRight(closeDialogIB);
+                closeDialogIB.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        AppAnimation.rotateAnimationLeft(closeDialogIB);
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                Vars.appDialog.dismiss();
+                            }
+                        }, 600);
+                    }
+                });
             }
         });
 

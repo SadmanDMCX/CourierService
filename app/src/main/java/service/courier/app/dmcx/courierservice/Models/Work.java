@@ -7,6 +7,8 @@ public class Work {
     private String work_title;
     private String work_description;
     private String work_status;
+    private long created_at;
+    private long modified_at;
 
     public String getId() {
         return id;
@@ -26,5 +28,13 @@ public class Work {
 
     public String getWork_status() {
         return work_status;
+    }
+
+    public long getCreated_at() {
+        return created_at;
+    }
+
+    public long getModified_at() {
+        return modified_at;
     }
 }

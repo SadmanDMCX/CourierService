@@ -1,4 +1,4 @@
-package service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin.Contents.Clients;
+package service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin.Contents.Employees;
 
 import android.app.AlertDialog;
 import android.support.annotation.NonNull;
@@ -24,40 +24,40 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import dmax.dialog.SpotsDialog;
 import service.courier.app.dmcx.courierservice.Activity.MainActivity;
 import service.courier.app.dmcx.courierservice.Firebase.AFModel;
-import service.courier.app.dmcx.courierservice.Models.Client;
+import service.courier.app.dmcx.courierservice.Models.Employee;
 import service.courier.app.dmcx.courierservice.R;
 import service.courier.app.dmcx.courierservice.Variables.Vars;
 
-public class ClientRecyclerViewAdapter extends RecyclerView.Adapter<ClientRecyclerViewAdapter.ClientRecyclerViewHolder> {
+public class EmployeeRecyclerViewAdapter extends RecyclerView.Adapter<EmployeeRecyclerViewAdapter.ClientRecyclerViewHolder> {
 
-    private List<Client> clients;
+    private List<Employee> employees;
 
-    public ClientRecyclerViewAdapter(List<Client> clients) {
-        this.clients = clients;
+    public EmployeeRecyclerViewAdapter(List<Employee> employees) {
+        this.employees = employees;
     }
 
     @Override
-    public ClientRecyclerViewAdapter.ClientRecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_single_admin_client, parent, false);
+    public EmployeeRecyclerViewAdapter.ClientRecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_single_admin_employee, parent, false);
         return new ClientRecyclerViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ClientRecyclerViewAdapter.ClientRecyclerViewHolder holder, final int position) {
-        holder.clientNameTV.setText(clients.get(position).getName());
-        holder.clientStatusTV.setText(clients.get(position).getStatus());
-        if (clients.get(position).getStatus().equals(AFModel.val_status_online)) {
-            holder.clientIV.setImageResource(R.drawable.client_black);
+    public void onBindViewHolder(EmployeeRecyclerViewAdapter.ClientRecyclerViewHolder holder, final int position) {
+        holder.employeeNameTV.setText(employees.get(position).getName());
+        holder.employeeStatusTV.setText(employees.get(position).getStatus());
+        if (employees.get(position).getStatus().equals(AFModel.val_status_online)) {
+            holder.employeeIV.setImageResource(R.drawable.employee_black);
         } else {
-            holder.clientIV.setImageResource(R.drawable.client_gray);
+            holder.employeeIV.setImageResource(R.drawable.employee_gray);
         }
 
-        final Client currentClient = clients.get(position);
+        final Employee currentEmployee = employees.get(position);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                View dialogView = LayoutInflater.from(MainActivity.instance).inflate(R.layout.dialog_admin_clients_assign_work, null);
+                View dialogView = LayoutInflater.from(MainActivity.instance).inflate(R.layout.dialog_admin_employees_assign_work, null);
                 Vars.appDialog.create(MainActivity.instance, dialogView).show();
 
                 final EditText workTitleET = dialogView.findViewById(R.id.workTitleET);
@@ -89,7 +89,7 @@ public class ClientRecyclerViewAdapter extends RecyclerView.Adapter<ClientRecycl
                         spotsDialog.show();
 
                         final DatabaseReference reference = Vars.appFirebase.getDbReference().child(AFModel.users)
-                                .child(AFModel.works).child(currentClient.getId());
+                                .child(AFModel.works).child(currentEmployee.getId());
                         String pushId = reference.push().getKey();
 
                         Map<String, Object> map = new HashMap<>();
@@ -97,6 +97,8 @@ public class ClientRecyclerViewAdapter extends RecyclerView.Adapter<ClientRecycl
                         map.put(AFModel.work_title, title);
                         map.put(AFModel.work_description, desc);
                         map.put(AFModel.work_status, AFModel.val_work_status_request);
+                        map.put(AFModel.created_at, System.currentTimeMillis());
+                        map.put(AFModel.modified_at, System.currentTimeMillis());
 
                         assert pushId != null;
                         reference.child(pushId).setValue(map)
@@ -119,23 +121,23 @@ public class ClientRecyclerViewAdapter extends RecyclerView.Adapter<ClientRecycl
 
     @Override
     public int getItemCount() {
-        return clients.size();
+        return employees.size();
     }
 
     public class ClientRecyclerViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView clientNameTV;
-        public TextView clientStatusTV;
-        public CircleImageView clientImageCIV;
-        public ImageView clientIV;
+        public TextView employeeNameTV;
+        public TextView employeeStatusTV;
+        public CircleImageView employeeImageCIV;
+        public ImageView employeeIV;
 
         public ClientRecyclerViewHolder(View itemView) {
             super(itemView);
 
-            clientNameTV = itemView.findViewById(R.id.clientNameTV);
-            clientStatusTV = itemView.findViewById(R.id.clientStatusTV);
-            clientImageCIV = itemView.findViewById(R.id.clientImageCIV);
-            clientIV = itemView.findViewById(R.id.clientIV);
+            employeeNameTV = itemView.findViewById(R.id.employeeNameTV);
+            employeeStatusTV = itemView.findViewById(R.id.employeeStatusTV);
+            employeeImageCIV = itemView.findViewById(R.id.employeeImageCIV);
+            employeeIV = itemView.findViewById(R.id.employeeIV);
         }
     }
 

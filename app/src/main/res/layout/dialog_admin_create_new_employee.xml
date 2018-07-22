@@ -11,7 +11,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
-        android:text="@string/create_new_client"
+        android:text="@string/new_employee"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="22sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/clientNameET"
+        android:id="@+id/employeeNameET"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
@@ -37,7 +37,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <EditText
-        android:id="@+id/clientEmailET"
+        android:id="@+id/employeeEmailET"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
@@ -52,10 +52,10 @@
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/clientNameET" />
+        app:layout_constraintTop_toBottomOf="@+id/employeeNameET" />
 
     <EditText
-        android:id="@+id/clientPasswordET"
+        android:id="@+id/employeePasswordET"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
@@ -70,7 +70,7 @@
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/clientEmailET" />
+        app:layout_constraintTop_toBottomOf="@+id/employeeEmailET" />
 
     <EditText
         android:id="@+id/adminPasswordET"
@@ -88,7 +88,7 @@
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/clientPasswordET" />
+        app:layout_constraintTop_toBottomOf="@+id/employeePasswordET" />
 
     <Button
         android:id="@+id/cancelBTN"

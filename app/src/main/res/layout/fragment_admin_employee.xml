@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/adminClientCL"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/adminEmployeeCL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/serviceManListRV"
+        android:id="@+id/employeeRV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />
@@ -21,6 +22,6 @@
         app:backgroundTint="@color/colorPrimaryDark"
         app:elevation="5dp"
         app:fabSize="normal"
-        />
+        tools:ignore="RtlHardcoded" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/adminClientWorkCL"
+    android:id="@+id/adminEmployeeWorkCL"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -17,7 +17,7 @@
         />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/adminClientWorkListRV"
+        android:id="@+id/adminEmployeeWorkListRV"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

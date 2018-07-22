@@ -10,8 +10,8 @@
             android:icon="@drawable/home_black"
             />
         <item
-            android:id="@+id/clientsANI"
-            android:title="Clients"
+            android:id="@+id/employeesANI"
+            android:title="Employees"
             android:icon="@drawable/list_black"
             />
         <item

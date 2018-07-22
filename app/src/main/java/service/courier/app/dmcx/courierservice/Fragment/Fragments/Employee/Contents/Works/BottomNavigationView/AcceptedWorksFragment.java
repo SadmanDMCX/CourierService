@@ -1,4 +1,4 @@
-package service.courier.app.dmcx.courierservice.Fragment.Fragments.Client.Contents.Works.BottomNavigationView;
+package service.courier.app.dmcx.courierservice.Fragment.Fragments.Employee.Contents.Works.BottomNavigationView;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
@@ -7,25 +7,24 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import dmax.dialog.SpotsDialog;
 import service.courier.app.dmcx.courierservice.Activity.MainActivity;
 import service.courier.app.dmcx.courierservice.Firebase.AFModel;
 import service.courier.app.dmcx.courierservice.Firebase.AppFirebase;
-import service.courier.app.dmcx.courierservice.Fragment.Fragments.Client.Contents.Works.Content.AcceptedWorksRecyclerViewAdapter;
-import service.courier.app.dmcx.courierservice.Fragment.Fragments.Client.Contents.Works.Content.PendingWorksRecyclerViewAdapter;
+import service.courier.app.dmcx.courierservice.Fragment.Fragments.Employee.Contents.Works.Content.AcceptedWorksRecyclerViewAdapter;
 import service.courier.app.dmcx.courierservice.Models.Work;
 import service.courier.app.dmcx.courierservice.R;
 import service.courier.app.dmcx.courierservice.Variables.Vars;
@@ -41,10 +40,6 @@ public class AcceptedWorksFragment extends Fragment {
 
     private List<Work> works;
 
-    public static void reload() {
-        instance.loadRecyclerView();
-    }
-
     private void loadRecyclerView() {
         works = new ArrayList<>();
 
@@ -58,12 +53,18 @@ public class AcceptedWorksFragment extends Fragment {
             @Override
             public void ProcessCallback(boolean isTaskCompleted) {
                 if (isTaskCompleted) {
-                    reference.addChildEventListener(new ChildEventListener() {
+                    reference.orderByChild(AFModel.created_at).addValueEventListener(new ValueEventListener() {
                         @Override
-                        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                            Work work = dataSnapshot.getValue(Work.class);
-                            if (work.getWork_status().equals(AFModel.val_work_status_accept)) {
-                                works.add(work);
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (!works.isEmpty()) {
+                                works.clear();
+                            }
+
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                Work work = snapshot.getValue(Work.class);
+                                if (work.getWork_status().equals(AFModel.val_work_status_accept)) {
+                                    works.add(work);
+                                }
                             }
 
                             acceptedWorksRecyclerViewAdapter = new AcceptedWorksRecyclerViewAdapter(works);
@@ -74,23 +75,8 @@ public class AcceptedWorksFragment extends Fragment {
                         }
 
                         @Override
-                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                            Log.d(Vars.APPTAG, "onChildChanged: Happend");
-                        }
-
-                        @Override
-                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                            Log.d(Vars.APPTAG, "onChildRemoved: Happend");
-                        }
-
-                        @Override
-                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                            Log.d(Vars.APPTAG, "onChildMoved: Happend");
-                        }
-
-                        @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
-                            Log.d(Vars.APPTAG, "onCancelled: Happend");
+
                         }
                     });
                 } else {
@@ -108,13 +94,15 @@ public class AcceptedWorksFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_client_works_bnv_assigned_works, container, false);
+        View view = inflater.inflate(R.layout.fragment_employee_works_bnv_assigned_works, container, false);
 
         instance = this;
 
         acceptedWorksRV = view.findViewById(R.id.acceptedWorksRV);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.instance);
+        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(true);
         acceptedWorksRV.hasFixedSize();
         acceptedWorksRV.setLayoutManager(linearLayoutManager);
 

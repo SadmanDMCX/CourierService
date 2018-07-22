@@ -12,7 +12,7 @@
         android:layout_height="wrap_content">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/clientImageCIV"
+            android:id="@+id/employeeImageCIV"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginBottom="16dp"
@@ -25,40 +25,39 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/clientNameTV"
+            android:id="@+id/employeeNameTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="2dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:text="Client 1"
+            android:text="@string/employee"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="18sp"
-            app:layout_constraintBottom_toTopOf="@+id/clientStatusTV"
-            app:layout_constraintStart_toEndOf="@+id/clientImageCIV"
-            app:layout_constraintTop_toTopOf="@+id/clientImageCIV" />
+            app:layout_constraintBottom_toTopOf="@+id/employeeStatusTV"
+            app:layout_constraintStart_toEndOf="@+id/employeeImageCIV"
+            app:layout_constraintTop_toTopOf="@+id/employeeImageCIV" />
 
         <TextView
-            android:id="@+id/clientStatusTV"
+            android:id="@+id/employeeStatusTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginStart="8dp"
-            android:text="On Work"
+            android:text="@string/work_status_accept"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="@+id/clientImageCIV"
-            app:layout_constraintStart_toEndOf="@+id/clientImageCIV"
-            app:layout_constraintTop_toBottomOf="@+id/clientNameTV" />
+            app:layout_constraintBottom_toBottomOf="@+id/employeeImageCIV"
+            app:layout_constraintStart_toEndOf="@+id/employeeImageCIV"
+            app:layout_constraintTop_toBottomOf="@+id/employeeNameTV" />
 
         <ImageView
-            android:id="@+id/clientIV"
+            android:id="@+id/employeeIV"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginBottom="8dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginTop="8dp"
-            android:src="@drawable/client_black"
+            android:contentDescription="@string/icon"
+            android:src="@drawable/employee_black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

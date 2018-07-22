@@ -47,7 +47,7 @@ import java.util.Map;
 import dmax.dialog.SpotsDialog;
 import service.courier.app.dmcx.courierservice.Activity.MainActivity;
 import service.courier.app.dmcx.courierservice.Firebase.AFModel;
-import service.courier.app.dmcx.courierservice.Models.Client;
+import service.courier.app.dmcx.courierservice.Models.Employee;
 import service.courier.app.dmcx.courierservice.R;
 import service.courier.app.dmcx.courierservice.Variables.Vars;
 
@@ -187,18 +187,18 @@ public class AdminHome extends Fragment implements OnMapReadyCallback, LocationL
         final AlertDialog spotDialog = new SpotsDialog(MainActivity.instance, "Please wait...");
         spotDialog.show();
 
-        final DatabaseReference reference = Vars.appFirebase.getDbReference().child(AFModel.users).child(AFModel.clients);
+        final DatabaseReference reference = Vars.appFirebase.getDbEmployeesReference();
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     @SuppressWarnings("unchecked")
-                    Map<String, Client> map = (Map<String, Client>) dataSnapshot.getValue();
+                    Map<String, Employee> map = (Map<String, Employee>) dataSnapshot.getValue();
                     if (map != null) {
-                        for (Map.Entry<String, Client> entry : map.entrySet()) {
+                        for (Map.Entry<String, Employee> entry : map.entrySet()) {
                             Map clientMap = (Map) entry.getValue();
 
-                            boolean isAdminsClient = clientMap.get(AFModel.admin_id).equals(Vars.appFirebase.getCurrentUser().getUid());
+                            boolean isAdminsClient = clientMap.get(AFModel.admin_id).equals(Vars.appFirebase.getCurrentUserId());
                             String id = (String) clientMap.get(AFModel.id);
                             String name = (String) clientMap.get(AFModel.username);
                             String lat = (String) clientMap.get(AFModel.latitude);

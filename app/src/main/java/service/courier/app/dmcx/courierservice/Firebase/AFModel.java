@@ -5,7 +5,7 @@ public class AFModel {
     public static final String users = "users";
 
     public static final String admins = "admins";
-    public static final String clients = "clients";
+    public static final String employees = "employees";
     public static final String works = "works";
     public static final String notifications = "notifications";
 

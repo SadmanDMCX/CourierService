@@ -2,7 +2,6 @@ package service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BaseTransientBottomBar;
@@ -28,26 +27,27 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import service.courier.app.dmcx.courierservice.Activity.MainActivity;
 import service.courier.app.dmcx.courierservice.Firebase.AFModel;
-import service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin.Contents.ClientWorks.AdminClientWorksRecyclerAdapter;
+import service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin.Contents.EmployeeWorks.AdminEmployeeWorksRecyclerAdapter;
 import service.courier.app.dmcx.courierservice.Fragment.Manager.AppFragmentManager;
 import service.courier.app.dmcx.courierservice.Models.Work;
 import service.courier.app.dmcx.courierservice.R;
 import service.courier.app.dmcx.courierservice.Variables.Vars;
 
-public class AdminClientWorks extends Fragment {
+public class AdminEmployeeWorks extends Fragment {
 
     public static final String TAG = "ADMIN-CLIENT-WORKS";
 
-    private CoordinatorLayout adminClientWorkCL;
-    private RecyclerView adminClientWorkListRV;
+    private CoordinatorLayout adminEmployeeWorkCL;
+    private RecyclerView adminEmployeeWorkListRV;
     private FloatingActionButton deleteAllFAB;
     private TextView noDataFoundTV;
 
-    private AdminClientWorksRecyclerAdapter adminClientWorksRecyclerAdapter;
+    private AdminEmployeeWorksRecyclerAdapter adminEmployeeWorksRecyclerAdapter;
 
     private List<Work> works;
     private String argClientId;
@@ -56,7 +56,7 @@ public class AdminClientWorks extends Fragment {
         works = new ArrayList<>();
 
         DatabaseReference reference = Vars.appFirebase.getDbReference().child(AFModel.users).child(AFModel.works).child(argClientId);
-        reference.addValueEventListener(new ValueEventListener() {
+        reference.orderByChild(AFModel.created_at).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -72,9 +72,9 @@ public class AdminClientWorks extends Fragment {
                         works.add(work);
                     }
 
-                    adminClientWorksRecyclerAdapter = new AdminClientWorksRecyclerAdapter(works);
-                    adminClientWorksRecyclerAdapter.notifyDataSetChanged();
-                    adminClientWorkListRV.setAdapter(adminClientWorksRecyclerAdapter);
+                    adminEmployeeWorksRecyclerAdapter = new AdminEmployeeWorksRecyclerAdapter(works);
+                    adminEmployeeWorksRecyclerAdapter.notifyDataSetChanged();
+                    adminEmployeeWorkListRV.setAdapter(adminEmployeeWorksRecyclerAdapter);
                 } else {
                     noDataFoundTV.setVisibility(View.VISIBLE);
                     deleteAllFAB.setVisibility(View.GONE);
@@ -105,17 +105,17 @@ public class AdminClientWorks extends Fragment {
                 final Work work = works.get(position);
 
                 works.remove(position);
-                adminClientWorksRecyclerAdapter.notifyItemRemoved(position);
+                adminEmployeeWorksRecyclerAdapter.notifyItemRemoved(position);
 
-                Snackbar.make(adminClientWorkCL, "Item deleted!", Snackbar.LENGTH_LONG)
+                Snackbar.make(adminEmployeeWorkCL, "Item deleted!", Snackbar.LENGTH_LONG)
                         .setActionTextColor(Color.WHITE)
                         .setAction("Undo", new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 isDeleteSuccess[0] = false;
                                 works.add(position, work);
-                                adminClientWorksRecyclerAdapter.notifyDataSetChanged();
-                                adminClientWorkListRV.smoothScrollToPosition(position);
+                                adminEmployeeWorksRecyclerAdapter.notifyDataSetChanged();
+                                adminEmployeeWorkListRV.smoothScrollToPosition(position);
                             }
                         })
                         .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
@@ -148,23 +148,25 @@ public class AdminClientWorks extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_admin_work_client_work, container, false);
+        View view = inflater.inflate(R.layout.fragment_admin_work_employee_work, container, false);
 
         argClientId = getArguments().getString(Vars.Transporter.CLIENT_ID);
 
-        adminClientWorkCL = view.findViewById(R.id.adminClientWorkCL);
-        adminClientWorkListRV = view.findViewById(R.id.adminClientWorkListRV);
+        adminEmployeeWorkCL = view.findViewById(R.id.adminEmployeeWorkCL);
+        adminEmployeeWorkListRV = view.findViewById(R.id.adminEmployeeWorkListRV);
         deleteAllFAB = view.findViewById(R.id.deleteAllFAB);
         noDataFoundTV = view.findViewById(R.id.noDataFoundTV);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.instance);
-        adminClientWorkListRV.hasFixedSize();
-        adminClientWorkListRV.setLayoutManager(linearLayoutManager);
+        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(true);
+        adminEmployeeWorkListRV.hasFixedSize();
+        adminEmployeeWorkListRV.setLayoutManager(linearLayoutManager);
 
         loadRecyclerAdapter();
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeRecyclerItemCallback());
-        itemTouchHelper.attachToRecyclerView(adminClientWorkListRV);
+        itemTouchHelper.attachToRecyclerView(adminEmployeeWorkListRV);
 
         deleteAllFAB.setOnClickListener(new View.OnClickListener() {
             @Override

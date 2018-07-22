@@ -1,4 +1,4 @@
-package service.courier.app.dmcx.courierservice.Fragment.Fragments.Client;
+package service.courier.app.dmcx.courierservice.Fragment.Fragments.Employee;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,21 +11,21 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import service.courier.app.dmcx.courierservice.Activity.MainActivity;
-import service.courier.app.dmcx.courierservice.Fragment.Fragments.Client.Contents.Works.BottomNavigationView.AcceptedWorksFragment;
-import service.courier.app.dmcx.courierservice.Fragment.Fragments.Client.Contents.Works.BottomNavigationView.PendingWorksFragment;
+import service.courier.app.dmcx.courierservice.Fragment.Fragments.Employee.Contents.Works.BottomNavigationView.AcceptedWorksFragment;
+import service.courier.app.dmcx.courierservice.Fragment.Fragments.Employee.Contents.Works.BottomNavigationView.PendingWorksFragment;
 import service.courier.app.dmcx.courierservice.Fragment.Manager.AppFragmentManager;
 import service.courier.app.dmcx.courierservice.R;
 
-public class ClientWorks extends Fragment {
+public class EmployeeWorks extends Fragment {
 
-    public static final String TAG = "CLIENT-WORKS";
+    public static final String TAG = "EMPLOYEE-WORKS";
 
     private BottomNavigationView worksBNV;
 
     @Nullable
     @Override
     public View onCreateView(final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_client_works, container, false);
+        View view = inflater.inflate(R.layout.fragment_employee_works, container, false);
 
         worksBNV = view.findViewById(R.id.worksBNV);
 

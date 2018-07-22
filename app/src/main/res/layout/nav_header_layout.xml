@@ -19,8 +19,8 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/navHeaderUserCIV"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:layout_marginBottom="8dp"
         android:layout_marginStart="16dp"
         android:src="@mipmap/app_icon_round"
@@ -41,7 +41,7 @@
         android:id="@+id/developerMail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="24dp"
         android:layout_marginStart="16dp"
         android:text="@string/email"
         android:textColor="@android:color/white"

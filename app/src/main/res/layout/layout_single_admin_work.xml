@@ -12,49 +12,56 @@
     android:layout_height="wrap_content">
 
     <android.support.constraint.ConstraintLayout
-        android:padding="5dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/clientCIV"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:id="@+id/employeeCIV"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
             android:src="@mipmap/app_icon_round"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/clientNameTV"
-            android:layout_width="wrap_content"
+            android:id="@+id/employeeNameTV"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:text="@string/name"
-            android:textSize="16sp"
+            android:textSize="18sp"
+            android:maxLines="1"
+            android:textColor="@color/colorPrimaryDark"
             app:layout_constraintBottom_toTopOf="@+id/noOfWorkTV"
-            app:layout_constraintStart_toEndOf="@+id/clientCIV"
-            app:layout_constraintTop_toTopOf="@+id/clientCIV" />
+            app:layout_constraintEnd_toStartOf="@+id/workIV"
+            app:layout_constraintStart_toEndOf="@+id/employeeCIV"
+            app:layout_constraintTop_toTopOf="@+id/employeeCIV" />
 
         <TextView
             android:id="@+id/noOfWorkTV"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:text="@string/no_of_work"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="@+id/clientCIV"
-            app:layout_constraintStart_toEndOf="@+id/clientCIV"
-            app:layout_constraintTop_toBottomOf="@+id/clientNameTV" />
+            android:textSize="14sp"
+            android:maxLines="1"
+            android:textColor="@color/colorPrimaryDark"
+            app:layout_constraintBottom_toBottomOf="@+id/employeeCIV"
+            app:layout_constraintEnd_toStartOf="@+id/workIV"
+            app:layout_constraintStart_toEndOf="@+id/employeeCIV"
+            app:layout_constraintTop_toBottomOf="@+id/employeeNameTV" />
 
         <ImageView
             android:id="@+id/workIV"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
-            android:layout_marginEnd="8dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="16dp"
             android:contentDescription="@string/work_image"
             android:src="@drawable/work_black"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -1,6 +1,6 @@
 package service.courier.app.dmcx.courierservice.Models;
 
-public class Client {
+public class Employee {
 
     private String image_path;
     private String id;

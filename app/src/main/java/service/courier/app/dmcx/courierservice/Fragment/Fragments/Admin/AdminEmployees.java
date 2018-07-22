@@ -1,6 +1,5 @@
 package service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin;
 
-import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -26,14 +25,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
-import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,57 +40,58 @@ import dmax.dialog.SpotsDialog;
 import service.courier.app.dmcx.courierservice.Activity.MainActivity;
 import service.courier.app.dmcx.courierservice.Firebase.AFModel;
 import service.courier.app.dmcx.courierservice.Firebase.AppFirebase;
-import service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin.Contents.Clients.ClientRecyclerViewAdapter;
-import service.courier.app.dmcx.courierservice.Models.Client;
-import service.courier.app.dmcx.courierservice.Models.Work;
+import service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin.Contents.Employees.EmployeeRecyclerViewAdapter;
+import service.courier.app.dmcx.courierservice.Models.Employee;
 import service.courier.app.dmcx.courierservice.R;
 import service.courier.app.dmcx.courierservice.Utility.AppUtils;
 import service.courier.app.dmcx.courierservice.Utility.AppValidator;
 import service.courier.app.dmcx.courierservice.Variables.Vars;
 
-public class AdminClients extends Fragment {
+public class AdminEmployees extends Fragment {
 
     public static final String TAG = "ADMIN-CLIENTS";
 
-    private CoordinatorLayout adminClientCL;
-    private RecyclerView serviceManListRV;
+    private CoordinatorLayout adminEmployeeCL;
+    private RecyclerView employeeRV;
     private FloatingActionButton addNewFab;
-    private ClientRecyclerViewAdapter clientRecyclerViewAdapter;
+    private EmployeeRecyclerViewAdapter employeeRecyclerViewAdapter;
 
-    private List<Client> clients;
+    private List<Employee> employees;
     private List<String> usernames;
 
     private void loadRecyclerView() {
-        clients = new ArrayList<>();
+        employees = new ArrayList<>();
         usernames = new ArrayList<>();
 
         final AlertDialog sportsDialog = new SpotsDialog(MainActivity.instance, "Please wait...");
         sportsDialog.show();
 
-        DatabaseReference reference = Vars.appFirebase.getDbReference();
-        reference.child(AFModel.users).child(AFModel.clients).addValueEventListener(new ValueEventListener() {
+        DatabaseReference reference = Vars.appFirebase.getDbEmployeesReference();
+        reference.orderByChild(AFModel.username).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    if (!clients.isEmpty()) {
-                        clients.clear();
-                    }
-                    if (!usernames.isEmpty()) {
-                        usernames.clear();
-                    }
-
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        Client client = snapshot.getValue(Client.class);
-                        assert client != null;
-                        if (client.getAdmin_id().equals(Vars.appFirebase.getCurrentUser().getUid())) {
-                            clients.add(client);
-                            usernames.add(client.getName());
+                if (Vars.isUserAdmin) {
+                    if (dataSnapshot.exists()) {
+                        if (!employees.isEmpty()) {
+                            employees.clear();
                         }
-                    }
+                        if (!usernames.isEmpty()) {
+                            usernames.clear();
+                        }
 
-                    clientRecyclerViewAdapter = new ClientRecyclerViewAdapter(clients);
-                    clientRecyclerViewAdapter.notifyDataSetChanged();
-                    serviceManListRV.setAdapter(clientRecyclerViewAdapter);
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            Employee employee = snapshot.getValue(Employee.class);
+                            assert employee != null;
+                            if (employee.getAdmin_id().equals(Vars.appFirebase.getCurrentUser().getUid())) {
+                                employees.add(employee);
+                                usernames.add(employee.getName());
+                            }
+                        }
+
+                        employeeRecyclerViewAdapter = new EmployeeRecyclerViewAdapter(employees);
+                        employeeRecyclerViewAdapter.notifyDataSetChanged();
+                        employeeRV.setAdapter(employeeRecyclerViewAdapter);
+                    }
                 }
 
                 sportsDialog.dismiss();
@@ -120,20 +118,20 @@ public class AdminClients extends Fragment {
 
                 final boolean[] isDeleteSuccess = {true};
                 final int position = viewHolder.getAdapterPosition();
-                final Client client = clients.get(position);
+                final Employee employee = employees.get(position);
 
-                clients.remove(position);
-                clientRecyclerViewAdapter.notifyItemRemoved(position);
+                employees.remove(position);
+                employeeRecyclerViewAdapter.notifyItemRemoved(position);
 
-                Snackbar.make(adminClientCL, "Item deleted!", Snackbar.LENGTH_LONG)
+                Snackbar.make(adminEmployeeCL, "Item deleted!", Snackbar.LENGTH_SHORT)
                         .setActionTextColor(Color.WHITE)
                         .setAction("Undo", new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 isDeleteSuccess[0] = false;
-                                clients.add(position, client);
-                                clientRecyclerViewAdapter.notifyDataSetChanged();
-                                serviceManListRV.smoothScrollToPosition(position);
+                                employees.add(position, employee);
+                                employeeRecyclerViewAdapter.notifyDataSetChanged();
+                                employeeRV.smoothScrollToPosition(position);
                             }
                         })
                         .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
@@ -142,7 +140,7 @@ public class AdminClients extends Fragment {
                                 super.onDismissed(transientBottomBar, event);
 
                                 if (isDeleteSuccess[0]) {
-                                    final DatabaseReference reference = Vars.appFirebase.getDbReference().child(AFModel.users).child(AFModel.clients).child(client.getId());
+                                    final DatabaseReference reference = Vars.appFirebase.getDbEmployeesReference().child(Vars.appFirebase.getCurrentUserId()).child(employee.getId());
                                     reference.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -152,7 +150,7 @@ public class AdminClients extends Fragment {
                                                     return;
                                                 }
 
-                                                final Client removalClient = dataSnapshot.getValue(Client.class);
+                                                final Employee removalEmployee = dataSnapshot.getValue(Employee.class);
 
                                                 View dialogView = LayoutInflater.from(MainActivity.instance).inflate(R.layout.dialog_admin_email_password, null);
                                                 Vars.appDialog.create(MainActivity.instance, dialogView).transparent();
@@ -175,22 +173,22 @@ public class AdminClients extends Fragment {
                                                     public void onClick(View view) {
                                                         Vars.appDialog.dismiss();
 
-                                                        final AlertDialog spotDialog = new SpotsDialog(MainActivity.instance, "Please wait...");
+                                                        final AlertDialog spotDialog = new SpotsDialog(MainActivity.instance, "Deleting! Please wait...");
                                                         spotDialog.show();
 
                                                         final String adminEmail = adminEmailET.getText().toString();
                                                         final String adminPassword = adminPasswordET.getText().toString();
 
-                                                        assert removalClient != null;
+                                                        assert removalEmployee != null;
                                                         String decrypt = "";
                                                         try {
-                                                            decrypt = AppUtils.Hash.decrypt(removalClient.getPassword());
+                                                            decrypt = AppUtils.Hash.decrypt(removalEmployee.getPassword());
                                                         } catch (Exception ex) {
                                                             Toast.makeText(MainActivity.instance, "Decrytion failed!", Toast.LENGTH_SHORT).show();
                                                             return;
                                                         }
-                                                        final String clientEmail = removalClient.getEmail();
-                                                        final String clientPassword = decrypt;
+                                                        final String employeeEmail = removalEmployee.getEmail();
+                                                        final String employeePassword = decrypt;
 
                                                         final boolean isAdminEmailEmpty = AppValidator.empty(adminEmail);
                                                         boolean isAdminEmailNotValid = !AppValidator.validEmail(adminEmail);
@@ -211,12 +209,12 @@ public class AdminClients extends Fragment {
                                                             return;
                                                         }
 
-                                                        Vars.appFirebase.signInUser(clientEmail, clientPassword, new AppFirebase.FirebaseCallback() {
+                                                        Vars.appFirebase.signInUser(employeeEmail, employeePassword, new AppFirebase.FirebaseCallback() {
                                                             @Override
                                                             public void ProcessCallback(boolean isTaskCompleted) {
                                                                 if (isTaskCompleted) {
                                                                     final FirebaseUser userClient = Vars.appFirebase.getCurrentUser();
-                                                                    AuthCredential authCredential = EmailAuthProvider.getCredential(clientEmail, clientPassword);
+                                                                    AuthCredential authCredential = EmailAuthProvider.getCredential(employeeEmail, employeePassword);
 
                                                                     userClient.reauthenticate(authCredential).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                         @Override
@@ -234,11 +232,21 @@ public class AdminClients extends Fragment {
                                                                                                             @Override
                                                                                                             public void onComplete(@NonNull Task<Void> task) {
                                                                                                                 if (task.isSuccessful()) {
-                                                                                                                    spotDialog.dismiss();
+                                                                                                                    DatabaseReference reference = Vars.appFirebase.getDbWorksReference().child(employee.getId());
+                                                                                                                    reference.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                        @Override
+                                                                                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                                                                                            if (task.isSuccessful()) {
+                                                                                                                                Toast.makeText(MainActivity.instance, "All the work is deleted successfully!", Toast.LENGTH_SHORT).show();
+                                                                                                                            }
+                                                                                                                        }
+                                                                                                                    });
+
                                                                                                                     Toast.makeText(MainActivity.instance, "Deleted permenently!", Toast.LENGTH_SHORT).show();
                                                                                                                 } else {
                                                                                                                     Toast.makeText(MainActivity.instance, "Error! While delete single work!", Toast.LENGTH_SHORT).show();
                                                                                                                 }
+                                                                                                                spotDialog.dismiss();
                                                                                                             }
                                                                                                         });
                                                                                                     }
@@ -289,31 +297,31 @@ public class AdminClients extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_admin_clients, container, false);
+        View view = inflater.inflate(R.layout.fragment_admin_employee, container, false);
 
-        adminClientCL = view.findViewById(R.id.adminClientCL);
-        serviceManListRV = view.findViewById(R.id.serviceManListRV);
+        adminEmployeeCL = view.findViewById(R.id.adminEmployeeCL);
+        employeeRV = view.findViewById(R.id.employeeRV);
         addNewFab = view.findViewById(R.id.addNewFab);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.instance);
-        serviceManListRV.setLayoutManager(linearLayoutManager);
-        serviceManListRV.hasFixedSize();
+        employeeRV.setLayoutManager(linearLayoutManager);
+        employeeRV.hasFixedSize();
 
         loadRecyclerView();
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeRecyclerItemCallback());
-        itemTouchHelper.attachToRecyclerView(serviceManListRV);
+        itemTouchHelper.attachToRecyclerView(employeeRV);
 
         addNewFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                View dialogView = LayoutInflater.from(MainActivity.instance).inflate(R.layout.dialog_admin_create_new_client, null);
+                View dialogView = LayoutInflater.from(MainActivity.instance).inflate(R.layout.dialog_admin_create_new_employee, null);
                 Vars.appDialog.create(MainActivity.instance, dialogView);
                 Vars.appDialog.show();
 
-                final EditText clientNameET = dialogView.findViewById(R.id.clientNameET);
-                final EditText clientEmailET = dialogView.findViewById(R.id.clientEmailET);
-                final EditText clientPasswordET = dialogView.findViewById(R.id.clientPasswordET);
+                final EditText employeeNameET = dialogView.findViewById(R.id.employeeNameET);
+                final EditText employeeEmailET = dialogView.findViewById(R.id.employeeEmailET);
+                final EditText employeePasswordET = dialogView.findViewById(R.id.employeePasswordET);
                 final EditText adminPasswordET = dialogView.findViewById(R.id.adminPasswordET);
                 final Button createBTN = dialogView.findViewById(R.id.createBTN);
                 final Button cancelBTN = dialogView.findViewById(R.id.cancelBTN);
@@ -328,9 +336,9 @@ public class AdminClients extends Fragment {
                 createBTN.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        final String name = clientNameET.getText().toString();
-                        final String email = clientEmailET.getText().toString();
-                        final String passwd = clientPasswordET.getText().toString();
+                        final String name = employeeNameET.getText().toString();
+                        final String email = employeeEmailET.getText().toString();
+                        final String passwd = employeePasswordET.getText().toString();
                         final String adminPasswd = adminPasswordET.getText().toString();
 
                         boolean isNameEmpty = AppValidator.empty(name);
@@ -406,9 +414,7 @@ public class AdminClients extends Fragment {
                                                 map.put(AFModel.created_at, System.currentTimeMillis());
                                                 map.put(AFModel.modified_at, System.currentTimeMillis());
 
-                                                DatabaseReference reference =
-                                                        Vars.appFirebase.getDbReference().child(AFModel.users).child(AFModel.clients)
-                                                        .child(Vars.appFirebase.getCurrentUser().getUid());
+                                                DatabaseReference reference = Vars.appFirebase.getDbEmployeesReference().child(Vars.appFirebase.getCurrentUser().getUid());
 
                                                 Vars.appFirebase.insert(reference, map, new AppFirebase.FirebaseCallback() {
                                                     @Override
@@ -421,7 +427,7 @@ public class AdminClients extends Fragment {
                                                                     spotsDialog.dismiss();
                                                                     loadRecyclerView();
 
-                                                                    Toast.makeText(MainActivity.instance, "Client created!", Toast.LENGTH_SHORT).show();
+                                                                    Toast.makeText(MainActivity.instance, "Employee created!", Toast.LENGTH_SHORT).show();
                                                                 }
 
                                                                 @Override

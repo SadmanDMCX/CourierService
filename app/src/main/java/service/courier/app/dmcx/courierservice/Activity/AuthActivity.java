@@ -84,12 +84,14 @@ public class AuthActivity extends AppCompatActivity {
 
                 @SuppressWarnings("unchecked")
                 Map<String, Admin> adminMap = (Map<String, Admin>) dataSnapshot.getValue();
-                for (Map.Entry<String, Admin> entry : adminMap.entrySet()) {
-                    Map singleAdminMap = (Map) entry.getValue();
-                    String singleAdminMapKey = entry.getKey();
-                    String singleAdminMapValue = (String) singleAdminMap.get(AFModel.username);
+                if (adminMap != null) {
+                    for (Map.Entry<String, Admin> entry : adminMap.entrySet()) {
+                        Map singleAdminMap = (Map) entry.getValue();
+                        String singleAdminMapKey = entry.getKey();
+                        String singleAdminMapValue = (String) singleAdminMap.get(AFModel.username);
 
-                    admins.put(singleAdminMapKey, singleAdminMapValue);
+                        admins.put(singleAdminMapKey, singleAdminMapValue);
+                    }
                 }
 
                 spotsDialog.dismiss();
@@ -193,7 +195,7 @@ public class AuthActivity extends AppCompatActivity {
                                     spotsDialog.dismiss();
 
                                     Vars.isUserAdmin = isTaskCompleted;
-                                    Vars.localDB.assignBooleanValue(Vars.PREFS_ISUSERADMIN, isTaskCompleted);
+                                    Vars.localDB.saveBooleanValue(Vars.PREFS_ISUSERADMIN, isTaskCompleted);
 
                                     if (isTaskCompleted) {
                                         DatabaseReference reference = Vars.appFirebase.getDbReference().child(AFModel.users).child(AFModel.admins).child(Vars.appFirebase.getCurrentUser().getUid());
@@ -210,7 +212,7 @@ public class AuthActivity extends AppCompatActivity {
                                             }
                                         });
                                     } else {
-                                        DatabaseReference reference = Vars.appFirebase.getDbReference().child(AFModel.users).child(AFModel.clients).child(Vars.appFirebase.getCurrentUser().getUid());
+                                        DatabaseReference reference = Vars.appFirebase.getDbReference().child(AFModel.users).child(AFModel.employees).child(Vars.appFirebase.getCurrentUser().getUid());
                                         Map<String, Object> map = new HashMap<>();
                                         map.put(AFModel.status, AFModel.val_status_online);
                                         reference.updateChildren(map).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -350,7 +352,7 @@ public class AuthActivity extends AppCompatActivity {
                                                     @Override
                                                     public void ProcessCallback(boolean isTaskCompleted) {
                                                         Vars.isUserAdmin = isTaskCompleted;
-                                                        Vars.localDB.assignBooleanValue(Vars.PREFS_ISUSERADMIN, isTaskCompleted);
+                                                        Vars.localDB.saveBooleanValue(Vars.PREFS_ISUSERADMIN, isTaskCompleted);
                                                         startMainActivity();
                                                     }
 

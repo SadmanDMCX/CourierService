@@ -33,6 +33,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.internal.service.BaseCommonServiceCallbacks;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -47,20 +48,22 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import dmax.dialog.SpotsDialog;
 import service.courier.app.dmcx.courierservice.Firebase.AFModel;
 import service.courier.app.dmcx.courierservice.Firebase.AppFirebase;
-import service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin.AdminClientWorks;
-import service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin.AdminClients;
+import service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin.AdminEmployeeWorks;
+import service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin.AdminEmployees;
 import service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin.AdminHome;
 import service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin.AdminProfile;
 import service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin.AdminWorks;
-import service.courier.app.dmcx.courierservice.Fragment.Fragments.Client.ClientHome;
-import service.courier.app.dmcx.courierservice.Fragment.Fragments.Client.ClientWorks;
+import service.courier.app.dmcx.courierservice.Fragment.Fragments.Employee.EmployeeHome;
+import service.courier.app.dmcx.courierservice.Fragment.Fragments.Employee.EmployeeWorks;
 import service.courier.app.dmcx.courierservice.Fragment.Manager.AppFragmentManager;
+import service.courier.app.dmcx.courierservice.Interface.BaseOnCompleteCallback;
 import service.courier.app.dmcx.courierservice.Models.Admin;
-import service.courier.app.dmcx.courierservice.Models.Client;
+import service.courier.app.dmcx.courierservice.Models.Employee;
 import service.courier.app.dmcx.courierservice.Variables.Vars;
 import service.courier.app.dmcx.courierservice.R;
 
@@ -78,9 +81,9 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
 
-    private FusedLocationProviderClient clientFusedLocationProviderClient;
-    private LocationRequest clientLocationRequest;
-    private LocationCallback clientLocationCallback;
+    private FusedLocationProviderClient fusedLocationProviderClient;
+    private LocationRequest locationRequest;
+    private LocationCallback locationCallback;
 
     private Animation aSlideUpToPositionFast;
 
@@ -149,26 +152,20 @@ public class MainActivity extends AppCompatActivity {
         if (Vars.isUserAdmin) {
             Map<String, Object> map = new HashMap<>();
             map.put(AFModel.status, AFModel.val_status_offline);
-            signOutMethod(AFModel.admins, map);
+            signOutMedhod(Vars.appFirebase.getDbAdminsReference(), map);
         } else {
-            clientFusedLocationProviderClient.removeLocationUpdates(clientLocationCallback);
+            fusedLocationProviderClient.removeLocationUpdates(locationCallback);
 
             Map<String, Object> map = new HashMap<>();
             map.put(AFModel.latitude, "");
             map.put(AFModel.longitude, "");
             map.put(AFModel.status, AFModel.val_status_offline);
-            signOutMethod(AFModel.clients, map);
+            signOutMedhod(Vars.appFirebase.getDbEmployeesReference(), map);
         }
-
-        Vars.appFirebase.signOutUser();
-        Vars.localDB.clearDB();
-        Vars.reset();
-        startAuthActivity();
     }
 
-    private void signOutMethod(String user, Map<String, Object> map) {
-        DatabaseReference reference = Vars.appFirebase.getDbReference().child(AFModel.users).child(user).child(Vars.appFirebase.getCurrentUser().getUid());
-        reference.updateChildren(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+    private void signOutMedhod(DatabaseReference reference, Map<String, Object> map) {
+        reference.child(Vars.appFirebase.getCurrentUserId()).updateChildren(map).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
@@ -176,11 +173,17 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     Log.d(Vars.APPTAG, "ExceptionCallback: " + task.getException().getMessage());
                 }
+
+                Vars.appFirebase.signOutUser();
+                Vars.localDB.clearDB();
+                Vars.reset();
+                startAuthActivity();
             }
         });
+
     }
 
-    private void loadNavHeader(String clild, final Class object) {
+    private void loadAdminNavHeader(String clild, final Class object) {
         View navHederView = navigationView.getHeaderView(0);
         final ImageView navHeaderUserCIV = navHederView.findViewById(R.id.navHeaderUserCIV);
         final TextView developerName = navHederView.findViewById(R.id.developerName);
@@ -201,9 +204,9 @@ public class MainActivity extends AppCompatActivity {
                         Admin admin = (Admin) classObject;
                         developerName.setText(admin.getName());
                         developerMail.setText(Vars.appFirebase.getCurrentUser().getEmail());
-                    } else if (classObject instanceof Client) {
-                        Client client = (Client) classObject;
-                        developerName.setText(client.getName());
+                    } else if (classObject instanceof Employee) {
+                        Employee employee = (Employee) classObject;
+                        developerName.setText(employee.getName());
                         developerMail.setText(Vars.appFirebase.getCurrentUser().getEmail());
                     }
                 }
@@ -218,14 +221,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void clientFusedLocationInit() {
-        clientLocationRequest = new LocationRequest();
-        clientLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        clientLocationRequest.setInterval(5000);
-        clientLocationRequest.setFastestInterval(3000);
-        clientLocationRequest.setSmallestDisplacement(10);
+    private void employeeFusedLocationInit() {
+        locationRequest = new LocationRequest();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(5000);
+        locationRequest.setFastestInterval(3000);
+        locationRequest.setSmallestDisplacement(10);
 
-        clientLocationCallback = new LocationCallback() {
+        locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 Location location = locationResult.getLastLocation();
@@ -233,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
                 if (location != null) {
                     Log.d(Vars.APPTAG, "getDeviceLocation: location found.");
 
-                    DatabaseReference reference = Vars.appFirebase.getDbReference().child(AFModel.users).child(AFModel.clients).child(Vars.appFirebase.getCurrentUser().getUid());
+                    DatabaseReference reference = Vars.appFirebase.getDbEmployeesReference().child(Vars.appFirebase.getCurrentUserId());
                     Map<String, Object>  map = new HashMap<>();
                     map.put(AFModel.latitude, String.valueOf(location.getLatitude()));
                     map.put(AFModel.longitude, String.valueOf(location.getLongitude()));
@@ -252,9 +255,9 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        clientFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(MainActivity.instance);
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(MainActivity.instance);
         if (checkPermission()) {
-            clientFusedLocationProviderClient.requestLocationUpdates(clientLocationRequest, clientLocationCallback, Looper.myLooper());
+            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
         }
     }
 
@@ -278,17 +281,16 @@ public class MainActivity extends AppCompatActivity {
         toggle.syncState();
 
         if (isUserAdmin) {
-            loadNavHeader(AFModel.admins, Admin.class);
             navigationView.inflateMenu(R.menu.drawer_menu_admin);
+            loadAdminNavHeader(AFModel.admins, Admin.class);
         } else {
             if (isServiceOk()) {
                 if (checkPermission()) {
-                    clientFusedLocationInit();
+                    employeeFusedLocationInit();
                 }
             }
-
-            loadNavHeader(AFModel.clients, Client.class);
-            navigationView.inflateMenu(R.menu.drawer_menu_client);
+            navigationView.inflateMenu(R.menu.drawer_menu_employee);
+            loadAdminNavHeader(AFModel.employees, Employee.class);
         }
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -306,8 +308,8 @@ public class MainActivity extends AppCompatActivity {
                                 loadNavFragment("Courier Service", TOOLBAR_MARGIN_SIZE, AppFragmentManager.fragmentMapContainer, new AdminHome(), AdminHome.TAG);
                                 break;
                             }
-                            case R.id.clientsANI: {
-                                loadNavFragment("Clients",0, AppFragmentManager.fragmentContainer, new AdminClients(), AdminClients.TAG);
+                            case R.id.employeesANI: {
+                                loadNavFragment("Employees",0, AppFragmentManager.fragmentContainer, new AdminEmployees(), AdminEmployees.TAG);
                                 break;
                             }
                             case R.id.worksANI: {
@@ -324,15 +326,15 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                             case R.id.homeCNI: {
-                                loadNavFragment("Home", 0, AppFragmentManager.fragmentContainer, new ClientHome(), ClientHome.TAG);
+                                loadNavFragment("Home", 0, AppFragmentManager.fragmentContainer, new EmployeeHome(), EmployeeHome.TAG);
                                 break;
                             }
                             case R.id.worksCNI: {
-                                loadNavFragment("Works", 0, AppFragmentManager.fragmentContainer, new ClientWorks(), ClientWorks.TAG);
+                                loadNavFragment("Works", 0, AppFragmentManager.fragmentContainer, new EmployeeWorks(), EmployeeWorks.TAG);
                                 break;
                             }
                             case R.id.profileCNI: {
-                                Toast.makeText(MainActivity.instance, "CLIENT PROFILE", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.instance, "PROFILE", Toast.LENGTH_SHORT).show();
                                 break;
                             }
                             case R.id.signOutCNI: {
@@ -352,7 +354,7 @@ public class MainActivity extends AppCompatActivity {
                 loadNavFragment("Courier Service", TOOLBAR_MARGIN_SIZE, AppFragmentManager.fragmentMapContainer, new AdminHome(), AdminHome.TAG);
                 navigationView.setCheckedItem(R.id.homeANI);
             } else {
-                loadNavFragment("Home", 0, AppFragmentManager.fragmentContainer, new ClientHome(), ClientHome.TAG);
+                loadNavFragment("Home", 0, AppFragmentManager.fragmentContainer, new EmployeeHome(), EmployeeHome.TAG);
                 navigationView.setCheckedItem(R.id.homeCNI);
             }
         }
@@ -362,13 +364,13 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
-        } else if (Vars.currentFragment.getTag().equals(AdminClientWorks.TAG)) {
+        } else if (Vars.currentFragment.getTag().equals(AdminEmployeeWorks.TAG)) {
             AppFragmentManager.replace(MainActivity.instance, AppFragmentManager.fragmentContainer, new AdminWorks(), AdminWorks.TAG);
         } else if (!Vars.currentFragment.getTag().equals(AdminHome.TAG) && Vars.isUserAdmin) {
             loadNavFragment("Courier Service", TOOLBAR_MARGIN_SIZE, AppFragmentManager.fragmentMapContainer, new AdminHome(), AdminHome.TAG);
             navigationView.setCheckedItem(R.id.homeANI);
-        } else if (!Vars.currentFragment.getTag().equals(ClientHome.TAG) && !Vars.isUserAdmin) {
-            loadNavFragment("Home", 0, AppFragmentManager.fragmentContainer, new ClientHome(), ClientHome.TAG);
+        } else if (!Vars.currentFragment.getTag().equals(EmployeeHome.TAG) && !Vars.isUserAdmin) {
+            loadNavFragment("Home", 0, AppFragmentManager.fragmentContainer, new EmployeeHome(), EmployeeHome.TAG);
             navigationView.setCheckedItem(R.id.homeCNI);
         } else {
             super.onBackPressed();

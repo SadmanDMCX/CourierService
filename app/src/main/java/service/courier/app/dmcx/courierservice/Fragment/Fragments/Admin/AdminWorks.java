@@ -23,7 +23,7 @@ import dmax.dialog.SpotsDialog;
 import service.courier.app.dmcx.courierservice.Activity.MainActivity;
 import service.courier.app.dmcx.courierservice.Firebase.AFModel;
 import service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin.Contents.Works.AdminWorksRecyclerAdapter;
-import service.courier.app.dmcx.courierservice.Models.Client;
+import service.courier.app.dmcx.courierservice.Models.Employee;
 import service.courier.app.dmcx.courierservice.R;
 import service.courier.app.dmcx.courierservice.Variables.Vars;
 
@@ -35,34 +35,37 @@ public class AdminWorks extends Fragment {
 
     private AdminWorksRecyclerAdapter adminWorksRecyclerAdapter;
 
-    private List<Client> clients;
+    private List<Employee> employees;
 
     private void loadRecylerAdapter() {
-        clients = new ArrayList<>();
+        employees = new ArrayList<>();
 
         final AlertDialog spotDialog = new SpotsDialog(MainActivity.instance, "Please wait...");
         spotDialog.show();
 
-        DatabaseReference reference = Vars.appFirebase.getDbReference().child(AFModel.users).child(AFModel.clients);
-        reference.addValueEventListener(new ValueEventListener() {
+        DatabaseReference reference = Vars.appFirebase.getDbEmployeesReference();
+        reference.orderByChild(AFModel.username).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    if (!clients.isEmpty()) {
-                        clients.clear();
-                    }
-
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        Client client = snapshot.getValue(Client.class);
-                        assert client != null;
-                        if (client.getAdmin_id().equals(Vars.appFirebase.getCurrentUser().getUid())) {
-                            clients.add(client);
+                if (Vars.isUserAdmin) {
+                    if (dataSnapshot.exists()) {
+                        if (!employees.isEmpty()) {
+                            employees.clear();
                         }
+
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            Employee employee = snapshot.getValue(Employee.class);
+                            assert employee != null;
+                            if (employee.getAdmin_id().equals(Vars.appFirebase.getCurrentUser().getUid())) {
+                                employees.add(employee);
+                            }
+                        }
+
+                        adminWorksRecyclerAdapter = new AdminWorksRecyclerAdapter(employees);
+                        adminWorksRecyclerAdapter.notifyDataSetChanged();
+                        adminWorkListRV.setAdapter(adminWorksRecyclerAdapter);
                     }
 
-                    adminWorksRecyclerAdapter = new AdminWorksRecyclerAdapter(clients);
-                    adminWorksRecyclerAdapter.notifyDataSetChanged();
-                    adminWorkListRV.setAdapter(adminWorksRecyclerAdapter);
                 }
 
                 spotDialog.dismiss();

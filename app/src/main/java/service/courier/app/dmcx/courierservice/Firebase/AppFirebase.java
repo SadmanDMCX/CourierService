@@ -27,10 +27,16 @@ public class AppFirebase {
 
     private FirebaseAuth mAuth;
     private DatabaseReference mReference;
+    private DatabaseReference mAdminReference;
+    private DatabaseReference mEmployeeReference;
+    private DatabaseReference mWorksReference;
 
     public AppFirebase() {
         mAuth = FirebaseAuth.getInstance();
         mReference = FirebaseDatabase.getInstance().getReference();
+        mAdminReference = FirebaseDatabase.getInstance().getReference().child(AFModel.users).child(AFModel.admins);
+        mEmployeeReference = FirebaseDatabase.getInstance().getReference().child(AFModel.users).child(AFModel.employees);
+        mWorksReference = FirebaseDatabase.getInstance().getReference().child(AFModel.users).child(AFModel.works);
     }
 
     public FirebaseUser getCurrentUser() {
@@ -71,8 +77,24 @@ public class AppFirebase {
         return mAuth;
     }
 
+    public String getCurrentUserId() {
+        return mAuth.getCurrentUser().getUid();
+    }
+
     public DatabaseReference getDbReference() {
         return mReference;
+    }
+
+    public DatabaseReference getDbAdminsReference() {
+        return mAdminReference;
+    }
+
+    public DatabaseReference getDbWorksReference() {
+        return mWorksReference;
+    }
+
+    public DatabaseReference getDbEmployeesReference() {
+        return mEmployeeReference;
     }
 
     public void insert(DatabaseReference reference, Map map, final FirebaseCallback callback) {
@@ -104,25 +126,15 @@ public class AppFirebase {
 
     public void isUserAdmin(final FirebaseCallback callback) {
         final String uid = mAuth.getCurrentUser().getUid();
-        mReference.child(AFModel.users).child(AFModel.admins).addListenerForSingleValueEvent(new ValueEventListener() {
+        mAdminReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.hasChild(uid)) {
                     callback.ProcessCallback(true);
                     callback.ExceptionCallback("");
                 } else {
-                    mReference.child(AFModel.users).child(AFModel.clients).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.hasChild(uid)) {
-                                callback.ProcessCallback(false);
-                                callback.ExceptionCallback("");
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {}
-                    });
+                    callback.ProcessCallback(false);
+                    callback.ExceptionCallback("");
                 }
             }
 

@@ -9,11 +9,11 @@
     <string name="sign_in">Sign In</string>
     <string name="sign_up">Sign Up</string>
     <string name="top">top</string>
-    <string name="create_new_client">Create New Client</string>
+    <string name="new_employee">New Employee</string>
     <string name="create">Create</string>
     <string name="cancel">Cancel</string>
     <string name="yes">Yes</string>
-    <string name="do_you_want_to_assign_work_to_this_client">Do you want to assign work to this client?</string>
+    <string name="do_you_want_to_assign_work_to_this_employee">Do you want to assign work to this employee?</string>
     <string name="message">Message</string>
     <string name="title">Title</string>
     <string name="description">Description</string>
@@ -38,4 +38,6 @@
     <string name="no_data_found">No Data Found!</string>
     <string name="admin_email">Admin Email</string>
     <string name="admin_password">Admin Password</string>
+    <string name="employee">Employee</string>
+    <string name="icon">ICON</string>
 </resources>

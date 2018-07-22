@@ -25,7 +25,7 @@
         android:layout_marginEnd="24dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
-        android:text="@string/do_you_want_to_assign_work_to_this_client"
+        android:text="@string/do_you_want_to_assign_work_to_this_employee"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"

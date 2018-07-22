@@ -15,13 +15,22 @@ public class LocalDB {
         editor = sharedPreferences.edit();
     }
 
-    public void assignBooleanValue(String key, boolean task) {
+    public void saveBooleanValue(String key, boolean task) {
         editor.putBoolean(key, task);
+        editor.commit();
+    }
+
+    public void saveStringValue(String key, String value) {
+        editor.putString(key, value);
         editor.commit();
     }
 
     public Boolean retriveBooleanValue(String key) {
         return sharedPreferences.getBoolean(key, false);
+    }
+
+    public String retriveStringValue(String key) {
+        return sharedPreferences.getString(key, "");
     }
 
     public void clearDB() {
