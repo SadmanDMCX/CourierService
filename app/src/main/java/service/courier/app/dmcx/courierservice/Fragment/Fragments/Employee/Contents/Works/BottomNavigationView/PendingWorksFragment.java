@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -34,6 +35,7 @@ public class PendingWorksFragment extends Fragment {
     public static final String TAG = "CLIENT-WORKS-PENDINGWORKFRAGMENT";
     public static PendingWorksFragment instance;
 
+    private SwipeRefreshLayout swipeRefresh;
     private RecyclerView pendingWorksRV;
 
     private PendingWorksRecyclerViewAdapter pendingWorksRecyclerViewAdapter;
@@ -74,6 +76,7 @@ public class PendingWorksFragment extends Fragment {
                                 pendingWorksRV.setAdapter(pendingWorksRecyclerViewAdapter);
                             }
 
+                            swipeRefresh.setRefreshing(false);
                             sportsDialog.dismiss();
                         }
 
@@ -83,6 +86,7 @@ public class PendingWorksFragment extends Fragment {
                         }
                     });
                 } else {
+                    swipeRefresh.setRefreshing(false);
                     sportsDialog.dismiss();
                 }
             }
@@ -101,6 +105,7 @@ public class PendingWorksFragment extends Fragment {
 
         instance = this;
 
+        swipeRefresh = view.findViewById(R.id.swipeRefresh);
         pendingWorksRV = view.findViewById(R.id.pendingWorksRV);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.instance);
@@ -110,6 +115,13 @@ public class PendingWorksFragment extends Fragment {
         pendingWorksRV.setLayoutManager(linearLayoutManager);
 
         loadRecyclerView();
+
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadRecyclerView();
+            }
+        });
 
         return view;
     }

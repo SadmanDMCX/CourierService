@@ -1,18 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:map="http://schemas.android.com/apk/res-auto">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Home"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <fragment
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        map:uiCompass="false"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        class="com.google.android.gms.maps.SupportMapFragment"
+        />
 
+    <ImageButton
+        android:id="@+id/gps"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/white_btn_bg_gps"
+        android:src="@drawable/gps_btn"
+        map:layout_constraintBottom_toBottomOf="parent"
+        map:layout_constraintEnd_toEndOf="parent"
+        android:contentDescription="@string/map_current_location" />
 
 </android.support.constraint.ConstraintLayout>

@@ -71,14 +71,16 @@ public class AdminEmployeeWorks extends Fragment {
                         Work work = snapshot.getValue(Work.class);
                         works.add(work);
                     }
-
-                    adminEmployeeWorksRecyclerAdapter = new AdminEmployeeWorksRecyclerAdapter(works);
-                    adminEmployeeWorksRecyclerAdapter.notifyDataSetChanged();
-                    adminEmployeeWorkListRV.setAdapter(adminEmployeeWorksRecyclerAdapter);
                 } else {
+                    works.clear();
+
                     noDataFoundTV.setVisibility(View.VISIBLE);
                     deleteAllFAB.setVisibility(View.GONE);
                 }
+
+                adminEmployeeWorksRecyclerAdapter = new AdminEmployeeWorksRecyclerAdapter(works);
+                adminEmployeeWorksRecyclerAdapter.notifyDataSetChanged();
+                adminEmployeeWorkListRV.setAdapter(adminEmployeeWorksRecyclerAdapter);
             }
 
             @Override

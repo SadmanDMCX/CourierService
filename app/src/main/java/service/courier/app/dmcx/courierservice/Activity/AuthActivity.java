@@ -1,8 +1,10 @@
 package service.courier.app.dmcx.courierservice.Activity;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings.Secure;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -195,16 +197,19 @@ public class AuthActivity extends AppCompatActivity {
                                     spotsDialog.dismiss();
 
                                     Vars.isUserAdmin = isTaskCompleted;
-                                    Vars.localDB.saveBooleanValue(Vars.PREFS_ISUSERADMIN, isTaskCompleted);
+                                    Vars.localDB.saveBooleanValue(Vars.PREFS_IS_USER_ADMIN, isTaskCompleted);
 
                                     if (isTaskCompleted) {
                                         DatabaseReference reference = Vars.appFirebase.getDbReference().child(AFModel.users).child(AFModel.admins).child(Vars.appFirebase.getCurrentUser().getUid());
                                         Map<String, Object> map = new HashMap<>();
-                                        map.put(AFModel.status, AFModel.val_status_online);
+                                        map.put(AFModel.status, AFModel.val_state_online);
                                         reference.updateChildren(map).addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if (task.isSuccessful()) {
+                                                    @SuppressLint("HardwareIds")
+                                                    String deviceId = Secure.getString(instance.getContentResolver(), Secure.ANDROID_ID);
+                                                    Vars.localDB.saveStringValue(Vars.PREFS_DEVICE_UNIQUE_ID, deviceId);
                                                     startMainActivity();
                                                 } else {
                                                     Toast.makeText(instance, "Online Error!", Toast.LENGTH_SHORT).show();
@@ -214,7 +219,7 @@ public class AuthActivity extends AppCompatActivity {
                                     } else {
                                         DatabaseReference reference = Vars.appFirebase.getDbReference().child(AFModel.users).child(AFModel.employees).child(Vars.appFirebase.getCurrentUser().getUid());
                                         Map<String, Object> map = new HashMap<>();
-                                        map.put(AFModel.status, AFModel.val_status_online);
+                                        map.put(AFModel.status, AFModel.val_state_online);
                                         reference.updateChildren(map).addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
@@ -334,13 +339,11 @@ public class AuthActivity extends AppCompatActivity {
                                     map.put(AFModel.id, Vars.appFirebase.getCurrentUser().getUid());
                                     map.put(AFModel.username, name);
                                     map.put(AFModel.phone_no, "");
-                                    map.put(AFModel.status, AFModel.val_status_online);
-                                    map.put(AFModel.latitude, "");
-                                    map.put(AFModel.longitude, "");
+                                    map.put(AFModel.email, email);
                                     map.put(AFModel.created_at, System.currentTimeMillis());
                                     map.put(AFModel.modified_at, System.currentTimeMillis());
 
-                                    DatabaseReference reference =
+                                    final DatabaseReference reference =
                                             Vars.appFirebase.getDbReference().child(AFModel.users).child(AFModel.admins)
                                             .child(Vars.appFirebase.getCurrentUser().getUid());
 
@@ -351,8 +354,12 @@ public class AuthActivity extends AppCompatActivity {
                                                 Vars.appFirebase.isUserAdmin(new AppFirebase.FirebaseCallback() {
                                                     @Override
                                                     public void ProcessCallback(boolean isTaskCompleted) {
+                                                        @SuppressLint("HardwareIds")
+                                                        String deviceId = Secure.getString(instance.getContentResolver(), Secure.ANDROID_ID);
+                                                        Vars.localDB.saveStringValue(Vars.PREFS_DEVICE_UNIQUE_ID, deviceId);
+
                                                         Vars.isUserAdmin = isTaskCompleted;
-                                                        Vars.localDB.saveBooleanValue(Vars.PREFS_ISUSERADMIN, isTaskCompleted);
+                                                        Vars.localDB.saveBooleanValue(Vars.PREFS_IS_USER_ADMIN, isTaskCompleted);
                                                         startMainActivity();
                                                     }
 
@@ -395,7 +402,7 @@ public class AuthActivity extends AppCompatActivity {
         super.onStart();
 
         if (Vars.appFirebase.getCurrentUser() != null) {
-            Vars.isUserAdmin = Vars.localDB.retriveBooleanValue(Vars.PREFS_ISUSERADMIN);
+            Vars.isUserAdmin = Vars.localDB.retriveBooleanValue(Vars.PREFS_IS_USER_ADMIN);
             startMainActivity();
         }
     }

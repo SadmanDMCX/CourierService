@@ -40,4 +40,27 @@
     <string name="admin_password">Admin Password</string>
     <string name="employee">Employee</string>
     <string name="icon">ICON</string>
+    <string name="map_current_location">Map current location</string>
+    <string name="phone_no">00000000000</string>
+    <string name="edit_button">edit button</string>
+    <string name="pending_works">Pending Works</string>
+    <string name="accepted_works">Accepted Works</string>
+    <string name="employee_5">Employee: 5</string>
+    <string name="active_3">Active: 3</string>
+    <string name="wors_19">Works: 19</string>
+    <string name="imageview">IMAGEVIEW</string>
+    <string name="admin_info"><ul>Admin Info</ul></string>
+    <string name="developers_email">md.sadman.shams@gmail.com</string>
+    <string name="_10">10</string>
+    <string name="enter_name">Enter Name</string>
+    <string name="enter_phone">Enter Phone</string>
+    <string name="authentication">Authentication</string>
+    <string name="enter_email">Enter Email</string>
+    <string name="enter_old_email">Enter Old Email</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="enter_new_password">Enter New Password</string>
+    <string name="enter_old_password">Enter Old Password</string>
+    <string name="enter_new_email">Enter New Email</string>
+    <string name="save">Save</string>
+    <string name="profile">Profile</string>
 </resources>

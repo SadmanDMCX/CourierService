@@ -1,6 +1,9 @@
 package service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin.Contents.Employees;
 
+import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,7 +17,10 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,34 +31,70 @@ import dmax.dialog.SpotsDialog;
 import service.courier.app.dmcx.courierservice.Activity.MainActivity;
 import service.courier.app.dmcx.courierservice.Firebase.AFModel;
 import service.courier.app.dmcx.courierservice.Models.Employee;
+import service.courier.app.dmcx.courierservice.Models.Status;
 import service.courier.app.dmcx.courierservice.R;
+import service.courier.app.dmcx.courierservice.Utility.AppUtils;
 import service.courier.app.dmcx.courierservice.Variables.Vars;
 
-public class EmployeeRecyclerViewAdapter extends RecyclerView.Adapter<EmployeeRecyclerViewAdapter.ClientRecyclerViewHolder> {
+public class AdminEmployeeRecyclerViewAdapter extends RecyclerView.Adapter<AdminEmployeeRecyclerViewAdapter.ClientRecyclerViewHolder> {
 
     private List<Employee> employees;
 
-    public EmployeeRecyclerViewAdapter(List<Employee> employees) {
+    public AdminEmployeeRecyclerViewAdapter(List<Employee> employees) {
         this.employees = employees;
     }
 
     @Override
-    public EmployeeRecyclerViewAdapter.ClientRecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public AdminEmployeeRecyclerViewAdapter.ClientRecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_single_admin_employee, parent, false);
         return new ClientRecyclerViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(EmployeeRecyclerViewAdapter.ClientRecyclerViewHolder holder, final int position) {
-        holder.employeeNameTV.setText(employees.get(position).getName());
-        holder.employeeStatusTV.setText(employees.get(position).getStatus());
-        if (employees.get(position).getStatus().equals(AFModel.val_status_online)) {
-            holder.employeeIV.setImageResource(R.drawable.employee_black);
-        } else {
-            holder.employeeIV.setImageResource(R.drawable.employee_gray);
-        }
+    public void onBindViewHolder(final AdminEmployeeRecyclerViewAdapter.ClientRecyclerViewHolder holder, int position) {
 
-        final Employee currentEmployee = employees.get(position);
+        final int itemPosition = position;
+
+        holder.employeeNameTV.setText(employees.get(position).getName());
+
+        Vars.appFirebase.getDbStatusReference().child(employees.get(position).getId())
+                .addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                boolean isOffline = true;
+                holder.employeeStatusTV.setText("");
+
+                if (dataSnapshot.exists()) {
+                    if (dataSnapshot.hasChildren()) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            Status status = snapshot.getValue(Status.class);
+                            if (status != null) {
+                                if (status.getState().equals(AFModel.val_state_online)) {
+                                    isOffline = false;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (!isOffline) {
+                            holder.employeeStatusTV.append(AppUtils.FirstLetterCapital(AFModel.val_state_online));
+                            holder.employeeIV.setImageResource(R.drawable.employee_black);
+                        } else {
+                            holder.employeeStatusTV.append(AppUtils.FirstLetterCapital(AFModel.val_state_offline));
+                            holder.employeeIV.setImageResource(R.drawable.employee_gray);
+                        }
+                    }
+                } else {
+                    holder.employeeStatusTV.setText("Not in service.");
+                    holder.employeeIV.setImageResource(R.drawable.employee_gray);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,6 +106,8 @@ public class EmployeeRecyclerViewAdapter extends RecyclerView.Adapter<EmployeeRe
                 final EditText workDescET = dialogView.findViewById(R.id.workDescET);
                 final Button assignBTN = dialogView.findViewById(R.id.assignBTN);
                 final Button cancelBTN = dialogView.findViewById(R.id.cancelBTN);
+
+                final Employee currentEmployee = employees.get(itemPosition);
 
                 cancelBTN.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -96,6 +140,8 @@ public class EmployeeRecyclerViewAdapter extends RecyclerView.Adapter<EmployeeRe
                         map.put(AFModel.work_id, pushId);
                         map.put(AFModel.work_title, title);
                         map.put(AFModel.work_description, desc);
+                        map.put(AFModel.latitude, "");
+                        map.put(AFModel.longitude, "");
                         map.put(AFModel.work_status, AFModel.val_work_status_request);
                         map.put(AFModel.created_at, System.currentTimeMillis());
                         map.put(AFModel.modified_at, System.currentTimeMillis());

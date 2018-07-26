@@ -4,10 +4,17 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/pendingWorksRV"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/pendingWorksRV"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </android.support.constraint.ConstraintLayout>

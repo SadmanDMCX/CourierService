@@ -13,6 +13,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class AppFirebase {
@@ -30,6 +32,7 @@ public class AppFirebase {
     private DatabaseReference mAdminReference;
     private DatabaseReference mEmployeeReference;
     private DatabaseReference mWorksReference;
+    private DatabaseReference mStatusReference;
 
     public AppFirebase() {
         mAuth = FirebaseAuth.getInstance();
@@ -37,6 +40,7 @@ public class AppFirebase {
         mAdminReference = FirebaseDatabase.getInstance().getReference().child(AFModel.users).child(AFModel.admins);
         mEmployeeReference = FirebaseDatabase.getInstance().getReference().child(AFModel.users).child(AFModel.employees);
         mWorksReference = FirebaseDatabase.getInstance().getReference().child(AFModel.users).child(AFModel.works);
+        mStatusReference = FirebaseDatabase.getInstance().getReference().child(AFModel.users).child(AFModel.status);
     }
 
     public FirebaseUser getCurrentUser() {
@@ -97,6 +101,10 @@ public class AppFirebase {
         return mEmployeeReference;
     }
 
+    public DatabaseReference getDbStatusReference() {
+        return mStatusReference;
+    }
+
     public void insert(DatabaseReference reference, Map map, final FirebaseCallback callback) {
         reference.setValue(map).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -122,6 +130,44 @@ public class AppFirebase {
 
             }
         });
+    }
+
+    public void checkEmployee(final FirebaseCallback callback) {
+        mEmployeeReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (getCurrentUser() != null) {
+                    if (dataSnapshot.hasChild(getCurrentUserId())) {
+                        callback.ProcessCallback(true);
+                    } else {
+                        callback.ProcessCallback(false);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                callback.ExceptionCallback(databaseError.getMessage());
+            }
+        });
+    }
+
+    public void checkEmployeeData(DataSnapshot snapshot, final FirebaseCallback callback) {
+        List<String> params = new ArrayList<>();
+        params.add(AFModel.id);
+        params.add(AFModel.phone_no);
+        params.add(AFModel.admin_id);
+        params.add(AFModel.email);
+        params.add(AFModel.password);
+
+        for (String item : params) {
+            if (!snapshot.hasChild(item)) {
+                callback.ProcessCallback(false);
+                return;
+            }
+        }
+
+        callback.ProcessCallback(true);
     }
 
     public void isUserAdmin(final FirebaseCallback callback) {

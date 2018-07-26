@@ -12,8 +12,8 @@ public class Vars {
     public static final String PASSWORD_SALT = "AdjkasjdNASASLDJKASDJj";
 
     public static final String PREFS_NAME = "CourierServiceAppLocalDB";
-    public static final String PREFS_ISUSERADMIN = "IsUserIsAdmin";
-    public static final String PREFS_EMPLOYEE_ADMIN_KEY = "EmployeeAdminKey";
+    public static final String PREFS_IS_USER_ADMIN = "IsUserIsAdmin";
+    public static final String PREFS_DEVICE_UNIQUE_ID = "DeviceId";
 
     public static final String APPTAG = "CSAppTag";
 
@@ -35,3 +35,4 @@ public class Vars {
         public static final String CLIENT_ID = "CLIENTID";
     }
 }
+

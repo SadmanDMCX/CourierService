@@ -2,6 +2,7 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -19,12 +20,12 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileEditIB">
+        app:layout_constraintTop_toTopOf="parent">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -36,7 +37,7 @@
                 android:layout_height="128dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="40dp"
                 android:src="@mipmap/app_icon_round"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -48,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="24dp"
                 android:text="@string/name"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="24sp"
@@ -62,7 +63,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:text="@string/email"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="16sp"
@@ -94,54 +95,115 @@
                 app:layout_constraintTop_toBottomOf="@+id/profilePhoneTV"
                 app:layout_constraintVertical_bias="1.0">
 
+                <com.wajahatkarim3.easyflipview.EasyFlipView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp"
+                    app:flipDuration="300"
+                    app:flipEnabled="true"
+                    app:flipFrom="front"
+                    app:flipOnTouch="true"
+                    app:flipType="horizontal"
+                    app:layout_constraintBottom_toTopOf="@+id/CardViewBottom"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <!-- Front -->
+                    <include layout="@layout/flip_employee_admin_info_front" />
+
+                    <!-- Back -->
+                    <include layout="@layout/flip_employee_admin_info_back" />
+
+                </com.wajahatkarim3.easyflipview.EasyFlipView>
+
                 <android.support.v7.widget.CardView
                     android:id="@+id/CardViewBottom"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginBottom="16dp"
                     android:layout_marginEnd="5dp"
                     android:layout_marginStart="5dp"
-                    android:layout_marginTop="16dp"
-                    app:cardElevation="5dp"
+                    android:layout_marginTop="8dp"
+                    app:cardElevation="3dp"
+                    app:cardCornerRadius="5dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toBottomOf="@+id/CardViewTop"
+                    tools:ignore="UnknownIdInLayout">
 
                     <android.support.constraint.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
-                        <ImageView
-                            android:id="@+id/employeesIconIV"
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
+                        <TextView
+                            android:id="@+id/pendWorkTV"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
                             android:layout_marginEnd="8dp"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="16dp"
-                            android:contentDescription="@string/imageview"
-                            android:scaleType="fitCenter"
-                            android:src="@drawable/employee_black_big"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="8dp"
+                            android:text="@string/pending_works"
+                            android:textAlignment="center"
+                            android:textColor="@color/colorPrimaryDark"
+                            android:textSize="16sp"
+                            app:layout_constraintBottom_toTopOf="@+id/pendingWorkTV"
                             app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/accecptWorkTV"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/accecptWorkTV"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="8dp"
+                            android:text="@string/accepted_works"
+                            android:textAlignment="center"
+                            android:textColor="@color/colorPrimaryDark"
+                            android:textSize="16sp"
+                            app:layout_constraintBottom_toTopOf="@+id/accecptedWorkTV"
+                            app:layout_constraintEnd_toStartOf="@+id/pendWorkTV"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <TextView
-                            android:id="@+id/totalEmployeesTV"
+                            android:id="@+id/accecptedWorkTV"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="16dp"
+                            android:layout_marginBottom="8dp"
                             android:layout_marginEnd="8dp"
                             android:layout_marginStart="8dp"
-                            android:text="@string/employee_5"
+                            android:layout_marginTop="8dp"
+                            android:text="@string/_10"
                             android:textAlignment="center"
                             android:textColor="@color/colorPrimaryDark"
-                            android:textSize="16sp"
+                            android:textSize="18sp"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/employeesIconIV" />
+                            app:layout_constraintEnd_toEndOf="@+id/accecptWorkTV"
+                            app:layout_constraintStart_toStartOf="@+id/accecptWorkTV"
+                            app:layout_constraintTop_toBottomOf="@+id/accecptWorkTV" />
+
+                        <TextView
+                            android:id="@+id/pendingWorkTV"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="8dp"
+                            android:text="@string/_10"
+                            android:textAlignment="center"
+                            android:textColor="@color/colorPrimaryDark"
+                            android:textSize="18sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="@+id/pendWorkTV"
+                            app:layout_constraintStart_toStartOf="@+id/pendWorkTV"
+                            app:layout_constraintTop_toBottomOf="@+id/pendWorkTV" />
 
                     </android.support.constraint.ConstraintLayout>
 

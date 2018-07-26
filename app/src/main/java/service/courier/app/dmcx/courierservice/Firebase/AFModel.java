@@ -7,12 +7,12 @@ public class AFModel {
     public static final String admins = "admins";
     public static final String employees = "employees";
     public static final String works = "works";
+    public static final String status = "status";
     public static final String notifications = "notifications";
 
     public static final String image_path = "image_path";
     public static final String username = "name";
     public static final String phone_no = "phone_no";
-    public static final String status = "status";
     public static final String created_at = "created_at";
     public static final String modified_at = "modified_at";
     public static final String admin_id = "admin_id";
@@ -22,6 +22,9 @@ public class AFModel {
 
     public static final String latitude = "latitude";
     public static final String longitude = "longitude";
+
+    public static final String state = "state";
+    public static final String device_name = "device_name";
 
     public static final String work_id = "work_id";
     public static final String work_title = "work_title";
@@ -34,8 +37,8 @@ public class AFModel {
     public static final String val_work_status_not_done = "not done";
     public static final String val_work_status_done= "done";
 
-    public static final String val_status_online = "online";
-    public static final String val_status_offline = "offline";
+    public static final String val_state_online = "online";
+    public static final String val_state_offline = "offline";
 
 
 }

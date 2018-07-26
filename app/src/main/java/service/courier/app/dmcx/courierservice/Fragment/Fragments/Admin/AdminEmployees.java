@@ -1,8 +1,11 @@
 package service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin;
 
+import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BaseTransientBottomBar;
@@ -40,7 +43,7 @@ import dmax.dialog.SpotsDialog;
 import service.courier.app.dmcx.courierservice.Activity.MainActivity;
 import service.courier.app.dmcx.courierservice.Firebase.AFModel;
 import service.courier.app.dmcx.courierservice.Firebase.AppFirebase;
-import service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin.Contents.Employees.EmployeeRecyclerViewAdapter;
+import service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin.Contents.Employees.AdminEmployeeRecyclerViewAdapter;
 import service.courier.app.dmcx.courierservice.Models.Employee;
 import service.courier.app.dmcx.courierservice.R;
 import service.courier.app.dmcx.courierservice.Utility.AppUtils;
@@ -54,7 +57,7 @@ public class AdminEmployees extends Fragment {
     private CoordinatorLayout adminEmployeeCL;
     private RecyclerView employeeRV;
     private FloatingActionButton addNewFab;
-    private EmployeeRecyclerViewAdapter employeeRecyclerViewAdapter;
+    private AdminEmployeeRecyclerViewAdapter adminEmployeeRecyclerViewAdapter;
 
     private List<Employee> employees;
     private List<String> usernames;
@@ -70,28 +73,40 @@ public class AdminEmployees extends Fragment {
         reference.orderByChild(AFModel.username).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (Vars.isUserAdmin) {
-                    if (dataSnapshot.exists()) {
-                        if (!employees.isEmpty()) {
-                            employees.clear();
-                        }
-                        if (!usernames.isEmpty()) {
-                            usernames.clear();
-                        }
-
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            Employee employee = snapshot.getValue(Employee.class);
-                            assert employee != null;
-                            if (employee.getAdmin_id().equals(Vars.appFirebase.getCurrentUser().getUid())) {
-                                employees.add(employee);
-                                usernames.add(employee.getName());
-                            }
-                        }
-
-                        employeeRecyclerViewAdapter = new EmployeeRecyclerViewAdapter(employees);
-                        employeeRecyclerViewAdapter.notifyDataSetChanged();
-                        employeeRV.setAdapter(employeeRecyclerViewAdapter);
+                if (dataSnapshot.exists()) {
+                    if (!employees.isEmpty()) {
+                        employees.clear();
                     }
+                    if (!usernames.isEmpty()) {
+                        usernames.clear();
+                    }
+
+                    for (final DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        if (snapshot != null) {
+                            Vars.appFirebase.checkEmployeeData(snapshot, new AppFirebase.FirebaseCallback() {
+                                @Override
+                                public void ProcessCallback(boolean isTaskCompleted) {
+                                    if (isTaskCompleted) {
+                                        Employee employee = snapshot.getValue(Employee.class);
+                                        assert employee != null;
+                                        if (employee.getAdmin_id().equals(Vars.appFirebase.getCurrentUser().getUid())) {
+                                            employees.add(employee);
+                                            usernames.add(employee.getName());
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void ExceptionCallback(String exception) {
+
+                                }
+                            });
+                        }
+                    }
+
+                    adminEmployeeRecyclerViewAdapter = new AdminEmployeeRecyclerViewAdapter(employees);
+                    adminEmployeeRecyclerViewAdapter.notifyDataSetChanged();
+                    employeeRV.setAdapter(adminEmployeeRecyclerViewAdapter);
                 }
 
                 sportsDialog.dismiss();
@@ -121,7 +136,7 @@ public class AdminEmployees extends Fragment {
                 final Employee employee = employees.get(position);
 
                 employees.remove(position);
-                employeeRecyclerViewAdapter.notifyItemRemoved(position);
+                adminEmployeeRecyclerViewAdapter.notifyItemRemoved(position);
 
                 Snackbar.make(adminEmployeeCL, "Item deleted!", Snackbar.LENGTH_SHORT)
                         .setActionTextColor(Color.WHITE)
@@ -130,7 +145,7 @@ public class AdminEmployees extends Fragment {
                             public void onClick(View view) {
                                 isDeleteSuccess[0] = false;
                                 employees.add(position, employee);
-                                employeeRecyclerViewAdapter.notifyDataSetChanged();
+                                adminEmployeeRecyclerViewAdapter.notifyDataSetChanged();
                                 employeeRV.smoothScrollToPosition(position);
                             }
                         })
@@ -237,7 +252,15 @@ public class AdminEmployees extends Fragment {
                                                                                                                         @Override
                                                                                                                         public void onComplete(@NonNull Task<Void> task) {
                                                                                                                             if (task.isSuccessful()) {
-                                                                                                                                Toast.makeText(MainActivity.instance, "All the work is deleted successfully!", Toast.LENGTH_SHORT).show();
+                                                                                                                                DatabaseReference statusReference = Vars.appFirebase.getDbStatusReference().child(employee.getId());
+                                                                                                                                statusReference.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                                    @Override
+                                                                                                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                                                                                                        if (task.isSuccessful()) {
+                                                                                                                                            usernames.remove(employee.getName());
+                                                                                                                                            Toast.makeText(MainActivity.instance, "All the records are deleted successfully!", Toast.LENGTH_SHORT).show();     }
+                                                                                                                                    }
+                                                                                                                                });
                                                                                                                             }
                                                                                                                         }
                                                                                                                     });
@@ -296,7 +319,7 @@ public class AdminEmployees extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable final Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_admin_employee, container, false);
 
         adminEmployeeCL = view.findViewById(R.id.adminEmployeeCL);
@@ -400,23 +423,19 @@ public class AdminEmployees extends Fragment {
                                                     e.printStackTrace();
                                                 }
 
-                                                Map<String, Object> map = new HashMap<>();
-                                                map.put(AFModel.image_path, "");
-                                                map.put(AFModel.id, Vars.appFirebase.getCurrentUser().getUid());
-                                                map.put(AFModel.username, name);
-                                                map.put(AFModel.email, email);
-                                                map.put(AFModel.password, hashed);
-                                                map.put(AFModel.admin_id, adminId);
-                                                map.put(AFModel.phone_no, "");
-                                                map.put(AFModel.status, AFModel.val_status_offline);
-                                                map.put(AFModel.latitude, "");
-                                                map.put(AFModel.longitude, "");
-                                                map.put(AFModel.created_at, System.currentTimeMillis());
-                                                map.put(AFModel.modified_at, System.currentTimeMillis());
+                                                Map<String, Object> employeeMap = new HashMap<>();
+                                                employeeMap.put(AFModel.image_path, "");
+                                                employeeMap.put(AFModel.id, Vars.appFirebase.getCurrentUser().getUid());
+                                                employeeMap.put(AFModel.username, name);
+                                                employeeMap.put(AFModel.email, email);
+                                                employeeMap.put(AFModel.password, hashed);
+                                                employeeMap.put(AFModel.admin_id, adminId);
+                                                employeeMap.put(AFModel.phone_no, "");
+                                                employeeMap.put(AFModel.created_at, System.currentTimeMillis());
+                                                employeeMap.put(AFModel.modified_at, System.currentTimeMillis());
 
-                                                DatabaseReference reference = Vars.appFirebase.getDbEmployeesReference().child(Vars.appFirebase.getCurrentUser().getUid());
-
-                                                Vars.appFirebase.insert(reference, map, new AppFirebase.FirebaseCallback() {
+                                                final DatabaseReference reference = Vars.appFirebase.getDbEmployeesReference().child(Vars.appFirebase.getCurrentUser().getUid());
+                                                Vars.appFirebase.insert(reference, employeeMap, new AppFirebase.FirebaseCallback() {
                                                     @Override
                                                     public void ProcessCallback(boolean isTaskCompleted) {
                                                         if (isTaskCompleted) {

@@ -23,6 +23,6 @@
         android:src="@drawable/gps_btn"
         map:layout_constraintBottom_toBottomOf="parent"
         map:layout_constraintEnd_toEndOf="parent"
-        android:contentDescription="Map current location" />
+        android:contentDescription="@string/map_current_location" />
 
 </android.support.constraint.ConstraintLayout>

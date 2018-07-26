@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -22,6 +23,7 @@ import java.util.List;
 import dmax.dialog.SpotsDialog;
 import service.courier.app.dmcx.courierservice.Activity.MainActivity;
 import service.courier.app.dmcx.courierservice.Firebase.AFModel;
+import service.courier.app.dmcx.courierservice.Firebase.AppFirebase;
 import service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin.Contents.Works.AdminWorksRecyclerAdapter;
 import service.courier.app.dmcx.courierservice.Models.Employee;
 import service.courier.app.dmcx.courierservice.R;
@@ -32,6 +34,7 @@ public class AdminWorks extends Fragment {
     public static final String TAG = "ADMIN-WORKS";
 
     private RecyclerView adminWorkListRV;
+    private SwipeRefreshLayout swipeRefresh;
 
     private AdminWorksRecyclerAdapter adminWorksRecyclerAdapter;
 
@@ -47,28 +50,38 @@ public class AdminWorks extends Fragment {
         reference.orderByChild(AFModel.username).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (Vars.isUserAdmin) {
-                    if (dataSnapshot.exists()) {
-                        if (!employees.isEmpty()) {
-                            employees.clear();
-                        }
-
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            Employee employee = snapshot.getValue(Employee.class);
-                            assert employee != null;
-                            if (employee.getAdmin_id().equals(Vars.appFirebase.getCurrentUser().getUid())) {
-                                employees.add(employee);
-                            }
-                        }
-
-                        adminWorksRecyclerAdapter = new AdminWorksRecyclerAdapter(employees);
-                        adminWorksRecyclerAdapter.notifyDataSetChanged();
-                        adminWorkListRV.setAdapter(adminWorksRecyclerAdapter);
+                if (dataSnapshot.exists()) {
+                    if (!employees.isEmpty()) {
+                        employees.clear();
                     }
 
+                    for (final DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        Vars.appFirebase.checkEmployeeData(snapshot, new AppFirebase.FirebaseCallback() {
+                            @Override
+                            public void ProcessCallback(boolean isTaskCompleted) {
+                                if (isTaskCompleted) {
+                                    Employee employee = snapshot.getValue(Employee.class);
+                                    assert employee != null;
+                                    if (employee.getAdmin_id().equals(Vars.appFirebase.getCurrentUser().getUid())) {
+                                        employees.add(employee);
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void ExceptionCallback(String exception) {
+
+                            }
+                        });
+                    }
+
+                    adminWorksRecyclerAdapter = new AdminWorksRecyclerAdapter(employees);
+                    adminWorksRecyclerAdapter.notifyDataSetChanged();
+                    adminWorkListRV.setAdapter(adminWorksRecyclerAdapter);
                 }
 
                 spotDialog.dismiss();
+                swipeRefresh.setRefreshing(false);
             }
 
             @Override
@@ -84,6 +97,7 @@ public class AdminWorks extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_admin_work, container, false);
 
+        swipeRefresh = view.findViewById(R.id.swipeRefresh);
         adminWorkListRV = view.findViewById(R.id.adminWorkListRV);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.instance);
@@ -91,6 +105,13 @@ public class AdminWorks extends Fragment {
         adminWorkListRV.setLayoutManager(linearLayoutManager);
 
         loadRecylerAdapter();
+
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadRecylerAdapter();
+            }
+        });
 
         return view;
     }

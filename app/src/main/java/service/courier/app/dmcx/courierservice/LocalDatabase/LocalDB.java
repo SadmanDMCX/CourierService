@@ -29,8 +29,8 @@ public class LocalDB {
         return sharedPreferences.getBoolean(key, false);
     }
 
-    public String retriveStringValue(String key) {
-        return sharedPreferences.getString(key, "");
+    public String retriveStringValue(String key, String value) {
+        return sharedPreferences.getString(key, value);
     }
 
     public void clearDB() {
