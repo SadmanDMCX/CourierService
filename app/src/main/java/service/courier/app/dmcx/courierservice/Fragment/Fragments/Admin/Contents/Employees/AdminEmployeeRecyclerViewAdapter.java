@@ -1,9 +1,7 @@
 package service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin.Contents.Employees;
 
-import android.animation.ValueAnimator;
-import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.AlertDialog;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,6 +13,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.places.AutocompleteFilter;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
@@ -109,6 +111,30 @@ public class AdminEmployeeRecyclerViewAdapter extends RecyclerView.Adapter<Admin
 
                 final Employee currentEmployee = employees.get(itemPosition);
 
+                PlaceAutocompleteFragment place = (PlaceAutocompleteFragment) MainActivity.instance.getFragmentManager().findFragmentById(R.id.setDestinationPACF);
+                final EditText placeACSI = (place.getView().findViewById(R.id.place_autocomplete_search_input));
+                final Place[] workPlace = new Place[1];
+                placeACSI.setTextSize(14.0f);
+                place.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+
+                    @Override
+                    public void onPlaceSelected(com.google.android.gms.location.places.Place place) {
+                        workPlace[0] = place;
+                    }
+
+                    @Override
+                    public void onError(com.google.android.gms.common.api.Status status) {
+                        Toast.makeText(MainActivity.instance,status.toString(),Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                AutocompleteFilter filter = new AutocompleteFilter.Builder()
+                        .setCountry("BD")
+                        .build();
+                place.setFilter(filter);
+
+
+
                 cancelBTN.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -136,25 +162,41 @@ public class AdminEmployeeRecyclerViewAdapter extends RecyclerView.Adapter<Admin
                                 .child(AFModel.works).child(currentEmployee.getId());
                         String pushId = reference.push().getKey();
 
-                        Map<String, Object> map = new HashMap<>();
-                        map.put(AFModel.work_id, pushId);
-                        map.put(AFModel.work_title, title);
-                        map.put(AFModel.work_description, desc);
-                        map.put(AFModel.latitude, "");
-                        map.put(AFModel.longitude, "");
-                        map.put(AFModel.work_status, AFModel.val_work_status_request);
-                        map.put(AFModel.created_at, System.currentTimeMillis());
-                        map.put(AFModel.modified_at, System.currentTimeMillis());
+                        Map<String, Object> workMap = new HashMap<>();
+                        workMap.put(AFModel.work_id, pushId);
+                        workMap.put(AFModel.work_title, title);
+                        workMap.put(AFModel.work_description, desc);
+                        workMap.put(AFModel.latitude, workPlace[0] != null ? workPlace[0].getLatLng().latitude : 360);
+                        workMap.put(AFModel.longitude, workPlace[0] != null ? workPlace[0].getLatLng().longitude : 360);
+                        workMap.put(AFModel.work_status, AFModel.val_work_status_request);
+                        workMap.put(AFModel.created_at, System.currentTimeMillis());
+                        workMap.put(AFModel.modified_at, System.currentTimeMillis());
 
                         assert pushId != null;
-                        reference.child(pushId).setValue(map)
+                        reference.child(pushId).setValue(workMap)
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
-                                    spotsDialog.dismiss();
                                     if (task.isSuccessful()) {
-                                        Toast.makeText(MainActivity.instance, "Work assigned!", Toast.LENGTH_SHORT).show();
+                                        Map<String, Object> notificationMap = new HashMap<>();
+                                        notificationMap.put(AFModel.from, Vars.appFirebase.getCurrentUserId());
+                                        notificationMap.put(AFModel.to, currentEmployee.getId());
+                                        notificationMap.put(AFModel.message, "A new work is assigned.");
+
+                                        String deviceId = Vars.localDB.retriveStringValue(Vars.PREFS_DEVICE_UNIQUE_ID, "");
+                                        Vars.appFirebase.getDbNotificationsReference().child(Vars.appFirebase.getCurrentUserId()).child(deviceId).setValue(notificationMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    Toast.makeText(MainActivity.instance, "Work assigned and notification sent!", Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                    Toast.makeText(MainActivity.instance, "Some issue occured!", Toast.LENGTH_SHORT).show();
+                                                }
+                                                spotsDialog.dismiss();
+                                            }
+                                        });
                                     } else {
+                                        spotsDialog.dismiss();
                                         Toast.makeText(MainActivity.instance, "Work can't assign! Contact with the developer.", Toast.LENGTH_SHORT).show();
                                     }
                                 }

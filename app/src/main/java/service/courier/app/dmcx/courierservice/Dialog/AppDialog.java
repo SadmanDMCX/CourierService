@@ -46,6 +46,10 @@ public class AppDialog {
         alertDialog.show();
     }
 
+    public void hide() {
+        alertDialog.hide();
+    }
+
     public void dismiss() {
         alertDialog.dismiss();
     }

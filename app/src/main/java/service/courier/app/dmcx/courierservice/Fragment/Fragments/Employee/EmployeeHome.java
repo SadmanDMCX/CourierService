@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -38,9 +39,12 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 import service.courier.app.dmcx.courierservice.Activity.MainActivity;
+import service.courier.app.dmcx.courierservice.Firebase.AFModel;
 import service.courier.app.dmcx.courierservice.Models.Status;
+import service.courier.app.dmcx.courierservice.Models.Work;
 import service.courier.app.dmcx.courierservice.R;
 import service.courier.app.dmcx.courierservice.Variables.Vars;
 
@@ -51,7 +55,7 @@ public class EmployeeHome extends Fragment implements OnMapReadyCallback {
     public static EmployeeHome instance;
 
     private static final int LOCATION_PERMISSION_CODE = 1234;
-    private static final float DEFAULT_MAP_ZOOM = 18f;
+    private static final float DEFAULT_MAP_ZOOM = 14f;
 
     private GoogleMap mMap;
     private Marker mMapMarker;
@@ -98,9 +102,55 @@ public class EmployeeHome extends Fragment implements OnMapReadyCallback {
         });
     }
 
+    private void loadEmployeeWork() {
+        Vars.appFirebase.getDbWorksReference().child(Vars.appFirebase.getCurrentUserId()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        Work work = snapshot.getValue(Work.class);
+                        if (work != null) {
+                            double lat = work.getLatitude();
+                            double lon = work.getLongitude();
+
+                            if (work.getWork_status().equals(AFModel.val_work_status_request)
+                                    || work.getWork_status().equals(AFModel.val_work_status_accept)) {
+                                if (lat != 360 && lon != 360) {
+                                    addWorkMarker(new LatLng(lat, lon), work.getWork_title());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     private void moveMapCamera(LatLng latLng, float zoom) {
         Log.d(Vars.APPTAG, "moveMapCamera: moving camera to position.");
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+    }
+
+    private void addWorkMarker(LatLng latLng, String title) {
+        Geocoder geocoder = new Geocoder(MainActivity.instance, Locale.getDefault());
+        List<Address> addresses = null;
+        try {
+            addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        MarkerOptions options = new MarkerOptions();
+        options.position(latLng);
+        options.title(title);
+        options.snippet(addresses != null ? addresses.get(0).getAddressLine(0) : "Nothing Found");
+        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+        mMap.addMarker(options);
     }
 
     private void addMapMarker(LatLng latLng, String title, String deviceName) {
@@ -132,6 +182,7 @@ public class EmployeeHome extends Fragment implements OnMapReadyCallback {
 
     private void init() {
         initMap();
+        loadEmployeeWork();
         eventListeners();
     }
 

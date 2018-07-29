@@ -26,6 +26,10 @@ public class AFModel {
     public static final String state = "state";
     public static final String device_name = "device_name";
 
+    public static final String to = "to";
+    public static final String message = "message";
+    public static final String from = "from";
+
     public static final String work_id = "work_id";
     public static final String work_title = "work_title";
     public static final String work_description = "work_description";

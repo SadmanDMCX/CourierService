@@ -73,7 +73,7 @@ public class AdminWorksRecyclerAdapter extends RecyclerView.Adapter<AdminWorksRe
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
-                bundle.putString(Vars.Transporter.CLIENT_ID, id);
+                bundle.putString(Vars.Transporter.ARGS_ADMIN_EMPLOYEE_ID, id);
 
                 AppFragmentManager.replace(MainActivity.instance, AppFragmentManager.fragmentContainer, new AdminEmployeeWorks(), AdminEmployeeWorks.TAG, bundle);
             }

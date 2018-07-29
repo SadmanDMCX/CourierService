@@ -27,7 +27,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import service.courier.app.dmcx.courierservice.Activity.MainActivity;
@@ -152,7 +151,7 @@ public class AdminEmployeeWorks extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_admin_work_employee_work, container, false);
 
-        argClientId = getArguments().getString(Vars.Transporter.CLIENT_ID);
+        argClientId = getArguments().getString(Vars.Transporter.ARGS_ADMIN_EMPLOYEE_ID);
 
         adminEmployeeWorkCL = view.findViewById(R.id.adminEmployeeWorkCL);
         adminEmployeeWorkListRV = view.findViewById(R.id.adminEmployeeWorkListRV);

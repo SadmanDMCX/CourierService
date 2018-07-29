@@ -2,16 +2,21 @@ package service.courier.app.dmcx.courierservice.Models;
 
 public class Work {
 
-    private String id;
     private String work_id;
     private String work_title;
     private String work_description;
     private String work_status;
+    private double latitude;
+    private double longitude;
     private long created_at;
     private long modified_at;
 
-    public String getId() {
-        return id;
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
     }
 
     public String getWork_id() {

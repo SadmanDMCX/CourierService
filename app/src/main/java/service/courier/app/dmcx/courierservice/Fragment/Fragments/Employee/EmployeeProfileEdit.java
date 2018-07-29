@@ -1,8 +1,6 @@
-package service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin;
+package service.courier.app.dmcx.courierservice.Fragment.Fragments.Employee;
 
-import android.animation.PropertyValuesHolder;
 import android.app.AlertDialog;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -31,13 +29,14 @@ import dmax.dialog.SpotsDialog;
 import service.courier.app.dmcx.courierservice.Activity.MainActivity;
 import service.courier.app.dmcx.courierservice.Firebase.AFModel;
 import service.courier.app.dmcx.courierservice.Models.Admin;
+import service.courier.app.dmcx.courierservice.Models.Employee;
 import service.courier.app.dmcx.courierservice.R;
 import service.courier.app.dmcx.courierservice.Utility.AppValidator;
 import service.courier.app.dmcx.courierservice.Variables.Vars;
 
-public class AdminProfileEdit extends Fragment {
+public class EmployeeProfileEdit extends Fragment {
 
-    public static final String TAG = "ADMIN-PROFILE-EDIT";
+    public static final String TAG = "EMPLOYEE-PROFILE-EDIT";
 
     private TextView authenticationTV;
     private EditText profileNameET;
@@ -55,13 +54,13 @@ public class AdminProfileEdit extends Fragment {
         final AlertDialog spotDialog = new SpotsDialog(MainActivity.instance, "Loading profile...");
         spotDialog.show();
 
-        Vars.appFirebase.getDbAdminsReference().child(Vars.appFirebase.getCurrentUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
+        Vars.appFirebase.getDbEmployeesReference().child(Vars.appFirebase.getCurrentUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                final Admin admin = dataSnapshot.getValue(Admin.class);
-                if (admin != null) {
-                    final String name = admin.getName();
-                    final String phone = admin.getPhone_no();
+                final Employee employee = dataSnapshot.getValue(Employee.class);
+                if (employee != null) {
+                    final String name = employee.getName();
+                    final String phone = employee.getPhone_no();
                     final String email = Vars.appFirebase.getCurrentUser().getEmail();
 
 
@@ -86,7 +85,7 @@ public class AdminProfileEdit extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_admin_profile_edit, container, false);
+        View view = inflater.inflate(R.layout.fragment_employee_profile_edit, container, false);
 
         authenticationTV = view.findViewById(R.id.authenticationTV);
         profileNameET = view.findViewById(R.id.profileNameET);
@@ -99,7 +98,6 @@ public class AdminProfileEdit extends Fragment {
         saveBTN = view.findViewById(R.id.saveBTN);
 
         loadProfileData();
-
 
         final Tooltip.Builder tooltipBuilder = new Tooltip.Builder(authenticationTV).setText("For changing email and password you need to fill the new email and password fields and click save in the authenticate section.");;
         authenticationTV.setOnClickListener(new View.OnClickListener() {
@@ -136,7 +134,7 @@ public class AdminProfileEdit extends Fragment {
                 }
 
                 if (!name.equals(profileName) || !phone.equals(profilePhone)) {
-                    Vars.appFirebase.getDbAdminsReference().child(Vars.appFirebase.getCurrentUserId()).updateChildren(profileMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    Vars.appFirebase.getDbEmployeesReference().child(Vars.appFirebase.getCurrentUserId()).updateChildren(profileMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
@@ -176,7 +174,7 @@ public class AdminProfileEdit extends Fragment {
 
                                     Map<String, Object> authMap = new HashMap<>();
                                     authMap.put(AFModel.email, newEmail);
-                                    Vars.appFirebase.getDbAdminsReference().child(Vars.appFirebase.getCurrentUserId()).updateChildren(authMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    Vars.appFirebase.getDbEmployeesReference().child(Vars.appFirebase.getCurrentUserId()).updateChildren(authMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {

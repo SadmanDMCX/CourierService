@@ -1,5 +1,6 @@
 package service.courier.app.dmcx.courierservice.Firebase;
 
+import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -12,6 +13,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +37,9 @@ public class AppFirebase {
     private DatabaseReference mEmployeeReference;
     private DatabaseReference mWorksReference;
     private DatabaseReference mStatusReference;
+    private DatabaseReference mNotificationsReference;
+
+    private StorageReference mStorageReference;
 
     public AppFirebase() {
         mAuth = FirebaseAuth.getInstance();
@@ -41,6 +48,9 @@ public class AppFirebase {
         mEmployeeReference = FirebaseDatabase.getInstance().getReference().child(AFModel.users).child(AFModel.employees);
         mWorksReference = FirebaseDatabase.getInstance().getReference().child(AFModel.users).child(AFModel.works);
         mStatusReference = FirebaseDatabase.getInstance().getReference().child(AFModel.users).child(AFModel.status);
+        mNotificationsReference = FirebaseDatabase.getInstance().getReference().child(AFModel.users).child(AFModel.notifications);
+
+        mStorageReference = FirebaseStorage.getInstance().getReference();
     }
 
     public FirebaseUser getCurrentUser() {
@@ -103,6 +113,10 @@ public class AppFirebase {
 
     public DatabaseReference getDbStatusReference() {
         return mStatusReference;
+    }
+
+    public DatabaseReference getDbNotificationsReference() {
+        return mNotificationsReference;
     }
 
     public void insert(DatabaseReference reference, Map map, final FirebaseCallback callback) {
@@ -189,4 +203,23 @@ public class AppFirebase {
         });
     }
 
+    public void addUserImageToStorage(final DatabaseReference reference, final Map<String, Object> map, Uri imageUri, final FirebaseCallback callback) {
+        mStorageReference.child(getCurrentUserId() + ".jpg").putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                if (task.isSuccessful()) {
+                    reference.updateChildren(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            callback.ProcessCallback(true);
+                        }
+                    });
+                }
+                else
+                    callback.ProcessCallback(false);
+
+                callback.ExceptionCallback(task.getException().toString());
+            }
+        });
+    }
 }

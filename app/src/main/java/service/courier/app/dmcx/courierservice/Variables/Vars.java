@@ -32,7 +32,12 @@ public class Vars {
     }
 
     public static class Transporter {
-        public static final String CLIENT_ID = "CLIENTID";
+        // Admin Employee Works
+        public static final String ARGS_ADMIN_EMPLOYEE_ID = "CLIENTID";
+
+        // Admin Profile
+        public static final String ARGS_ADMIN_PROFILE_NAME = "PROFILE_NAME";
+        public static final String ARGS_ADMIN_PROFILE_PHONE = "PROFILE_NAME";
     }
 }
 

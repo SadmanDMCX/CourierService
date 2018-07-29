@@ -1,4 +1,6 @@
 <resources>
+    <string name="google_maps_api_key">AIzaSyB1nh0ebCdPdhwAgFsqW55vDit04l66oSM</string>
+
     <string name="app_name">CourierService</string>
     <string name="password">Password</string>
     <string name="email">Email</string>
@@ -18,10 +20,9 @@
     <string name="title">Title</string>
     <string name="description">Description</string>
     <string name="assign">Assign</string>
-    <string name="create_work">Create Work</string>
+    <string name="new_work">New Work</string>
     <string name="no">No</string>
     <string name="check_work_acceptence">Check Work Acceptence</string>
-    <string name="new_work">New Work</string>
     <string name="work_description">Work description</string>
     <string name="accept">Accept</string>
     <string name="deny">Deny</string>
@@ -63,4 +64,5 @@
     <string name="enter_new_email">Enter New Email</string>
     <string name="save">Save</string>
     <string name="profile">Profile</string>
+    <string name="set_destination">Set Destination</string>
 </resources>

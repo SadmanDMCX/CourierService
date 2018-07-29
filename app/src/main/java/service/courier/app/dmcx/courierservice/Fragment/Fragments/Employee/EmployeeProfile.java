@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -20,6 +21,7 @@ import dmax.dialog.SpotsDialog;
 import service.courier.app.dmcx.courierservice.Activity.MainActivity;
 import service.courier.app.dmcx.courierservice.Firebase.AFModel;
 import service.courier.app.dmcx.courierservice.Firebase.AppFirebase;
+import service.courier.app.dmcx.courierservice.Fragment.Manager.AppFragmentManager;
 import service.courier.app.dmcx.courierservice.Models.Admin;
 import service.courier.app.dmcx.courierservice.Models.Employee;
 import service.courier.app.dmcx.courierservice.Models.Work;
@@ -43,6 +45,7 @@ public class EmployeeProfile extends Fragment {
     private TextView adminPhoneNoTV;
     private TextView pendingWorkTV;
     private TextView accecptedWorkTV;
+    private TextView changeImageFAB;
 
     private int totalPendingWorks = 0;
     private int totalAcceptedWorks = 0;
@@ -175,8 +178,24 @@ public class EmployeeProfile extends Fragment {
         adminPhoneNoTV = view.findViewById(R.id.adminPhoneNoTV);
         pendingWorkTV = view.findViewById(R.id.pendingWorkTV);
         accecptedWorkTV = view.findViewById(R.id.accecptedWorkTV);
+        changeImageFAB = view.findViewById(R.id.changeImageFAB);
 
         loadProfileInfo();
+
+        profileEditIB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(MainActivity.instance, "TRIG", Toast.LENGTH_SHORT).show();
+                AppFragmentManager.replace(MainActivity.instance, AppFragmentManager.fragmentContainer, new EmployeeProfileEdit(), EmployeeProfileEdit.TAG);
+            }
+        });
+
+        changeImageFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
 
         return view;
     }

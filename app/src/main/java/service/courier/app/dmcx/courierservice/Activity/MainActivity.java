@@ -64,6 +64,7 @@ import service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin.AdminPro
 import service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin.AdminWorks;
 import service.courier.app.dmcx.courierservice.Fragment.Fragments.Employee.EmployeeHome;
 import service.courier.app.dmcx.courierservice.Fragment.Fragments.Employee.EmployeeProfile;
+import service.courier.app.dmcx.courierservice.Fragment.Fragments.Employee.EmployeeProfileEdit;
 import service.courier.app.dmcx.courierservice.Fragment.Fragments.Employee.EmployeeWorks;
 import service.courier.app.dmcx.courierservice.Fragment.Manager.AppFragmentManager;
 import service.courier.app.dmcx.courierservice.Models.Admin;
@@ -90,6 +91,14 @@ public class MainActivity extends AppCompatActivity {
 
     private LocationCallback locationCallback;
     private FusedLocationProviderClient fusedLocationProviderClient;
+
+    // Static Method
+    public static class MainActivityClass {
+        public static void signOut() {
+            MainActivity.instance.signOutUser();
+        }
+    }
+    // Static Method
 
     // Checker
     private boolean isServicesOk() {
@@ -156,23 +165,13 @@ public class MainActivity extends AppCompatActivity {
         fusedLocationProviderClient.removeLocationUpdates(locationCallback);
 
         Map<String, Object> map = new HashMap<>();
-        if (Vars.isUserAdmin) {
-            map.put(AFModel.latitude, 360);
-            map.put(AFModel.longitude, 360);
-            map.put(AFModel.state, AFModel.val_state_offline);
-        } else {
-            map.put(AFModel.latitude, 360);
-            map.put(AFModel.longitude, 360);
-            map.put(AFModel.state, AFModel.val_state_offline);
-        }
+        map.put(AFModel.latitude, 360);
+        map.put(AFModel.longitude, 360);
+        map.put(AFModel.state, AFModel.val_state_offline);
 
-        signOutMedhod(Vars.appFirebase.getDbStatusReference(), map);
-    }
-
-    private void signOutMedhod(DatabaseReference reference, Map<String, Object> map) {
         @SuppressLint("HardwareIds")
         String deviceId = Vars.localDB.retriveStringValue(Vars.PREFS_DEVICE_UNIQUE_ID, Secure.getString(instance.getContentResolver(), Secure.ANDROID_ID));
-        reference.child(Vars.appFirebase.getCurrentUserId()).child(deviceId).updateChildren(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+        Vars.appFirebase.getDbStatusReference().child(Vars.appFirebase.getCurrentUserId()).child(deviceId).updateChildren(map).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
@@ -187,7 +186,6 @@ public class MainActivity extends AppCompatActivity {
                 startAuthActivity();
             }
         });
-
     }
 
     private void fusedLocationInit() {
@@ -344,7 +342,7 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             switch (menuItem.getItemId()) {
                                 case R.id.homeCNI: {
-                                    loadNavFragment("Home", 15, AppFragmentManager.fragmentMapContainer, new EmployeeHome(), EmployeeHome.TAG);
+                                    loadNavFragment("Courier Service", 15, AppFragmentManager.fragmentMapContainer, new EmployeeHome(), EmployeeHome.TAG);
                                     break;
                                 }
                                 case R.id.worksCNI: {
@@ -373,7 +371,7 @@ public class MainActivity extends AppCompatActivity {
                 loadNavFragment("Courier Service", TOOLBAR_MARGIN_SIZE, AppFragmentManager.fragmentMapContainer, new AdminHome(), AdminHome.TAG);
                 navigationView.setCheckedItem(R.id.homeANI);
             } else {
-                loadNavFragment("Home", 15, AppFragmentManager.fragmentMapContainer, new EmployeeHome(), EmployeeHome.TAG);
+                loadNavFragment("Courier Service", 15, AppFragmentManager.fragmentMapContainer, new EmployeeHome(), EmployeeHome.TAG);
                 navigationView.setCheckedItem(R.id.homeCNI);
             }
         }
@@ -422,16 +420,37 @@ public class MainActivity extends AppCompatActivity {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else if (Vars.currentFragment.getTag().equals(AdminEmployeeWorks.TAG)) {
             AppFragmentManager.replace(MainActivity.instance, AppFragmentManager.fragmentContainer, new AdminWorks(), AdminWorks.TAG);
+        } else if (Vars.currentFragment.getTag().equals(AdminProfileEdit.TAG)) {
+            loadNavFragment("Profile",0, AppFragmentManager.fragmentContainer, new AdminProfile(), AdminProfile.TAG);
+        } else if (Vars.currentFragment.getTag().equals(EmployeeProfileEdit.TAG)) {
+            loadNavFragment("Profile",0, AppFragmentManager.fragmentContainer, new EmployeeProfile(), EmployeeProfile.TAG);
         } else if (!Vars.currentFragment.getTag().equals(AdminHome.TAG) && Vars.isUserAdmin) {
             loadNavFragment("Courier Service", TOOLBAR_MARGIN_SIZE, AppFragmentManager.fragmentMapContainer, new AdminHome(), AdminHome.TAG);
             navigationView.setCheckedItem(R.id.homeANI);
         } else if (!Vars.currentFragment.getTag().equals(EmployeeHome.TAG) && !Vars.isUserAdmin) {
-            loadNavFragment("Home", 0, AppFragmentManager.fragmentContainer, new EmployeeHome(), EmployeeHome.TAG);
+            loadNavFragment("Courier Service", 0, AppFragmentManager.fragmentContainer, new EmployeeHome(), EmployeeHome.TAG);
             navigationView.setCheckedItem(R.id.homeCNI);
-        } else if (Vars.currentFragment.getTag().equals(AdminProfileEdit.TAG)) {
-            loadNavFragment("Profile",0, AppFragmentManager.fragmentContainer, new AdminProfile(), AdminProfile.TAG);
         } else {
             fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+
+            Map<String, Object> map = new HashMap<>();
+            map.put(AFModel.latitude, 360);
+            map.put(AFModel.longitude, 360);
+            map.put(AFModel.state, AFModel.val_state_offline);
+
+            @SuppressLint("HardwareIds")
+            String deviceId = Vars.localDB.retriveStringValue(Vars.PREFS_DEVICE_UNIQUE_ID, Secure.getString(instance.getContentResolver(), Secure.ANDROID_ID));
+            Vars.appFirebase.getDbStatusReference().child(Vars.appFirebase.getCurrentUserId()).child(deviceId).updateChildren(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(instance, "You are now offline!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Log.d(Vars.APPTAG, "ExceptionCallback: " + Objects.requireNonNull(task.getException()).getMessage());
+                    }
+                }
+            });
+
             super.onBackPressed();
         }
     }

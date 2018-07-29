@@ -37,10 +37,13 @@ dependencies {
     // Maps
     implementation 'com.google.android.gms:play-services-maps:15.0.1'
     implementation 'com.google.android.gms:play-services-location:15.0.1'
+    implementation 'com.google.android.gms:play-services-places:15.0.1'
     // 3rd Party
     implementation 'com.github.d-max:spots-dialog:0.7@aar'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'com.wajahatkarim3.EasyFlipView:EasyFlipView:2.1.0'
+    implementation 'com.github.vihtarb:tooltip:0.1.9'
+    implementation 'com.seatgeek:placesautocomplete:0.3-SNAPSHOT'
 }
 
 apply plugin: 'com.google.gms.google-services'
