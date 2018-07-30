@@ -47,6 +47,28 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <ProgressBar
+                android:id="@+id/imageLoadPB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/profileImageCIV"
+                app:layout_constraintEnd_toEndOf="@+id/profileImageCIV"
+                app:layout_constraintHorizontal_bias="0.484"
+                app:layout_constraintStart_toStartOf="@+id/profileImageCIV"
+                app:layout_constraintTop_toTopOf="@+id/profileImageCIV" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/changeImageFAB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/camera_white"
+                app:elevation="2dp"
+                app:fabSize="mini"
+                app:layout_constraintBottom_toBottomOf="@+id/profileImageCIV"
+                app:layout_constraintEnd_toEndOf="@+id/profileImageCIV"
+                app:rippleColor="@android:color/white" />
+
             <EditText
                 android:id="@+id/profileNameET"
                 android:layout_width="match_parent"

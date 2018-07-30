@@ -15,6 +15,8 @@ import android.widget.Toast;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import dmax.dialog.SpotsDialog;
@@ -45,7 +47,6 @@ public class EmployeeProfile extends Fragment {
     private TextView adminPhoneNoTV;
     private TextView pendingWorkTV;
     private TextView accecptedWorkTV;
-    private TextView changeImageFAB;
 
     private int totalPendingWorks = 0;
     private int totalAcceptedWorks = 0;
@@ -65,6 +66,7 @@ public class EmployeeProfile extends Fragment {
                             Employee employee = snapshot.getValue(Employee.class);
                             if (employee != null) {
                                 final String name = employee.getName();
+                                final String image_path = employee.getImage_path();
                                 final String email = employee.getEmail();
                                 final String phone = employee.getPhone_no();
                                 final String employeeId = employee.getId();
@@ -73,6 +75,13 @@ public class EmployeeProfile extends Fragment {
                                 profileNameTV.setText(name);
                                 profileEmailTV.setText(email);
                                 profilePhoneTV.setText(phone);
+
+                                if (!image_path.equals("")) {
+                                    Picasso.with(MainActivity.instance)
+                                            .load(image_path)
+                                            .placeholder(R.drawable.default_avater)
+                                            .into(profileImageCIV);
+                                }
 
                                 if(phone.equals("")) {
                                     profilePhoneTV.setText("Not Given...");
@@ -85,12 +94,20 @@ public class EmployeeProfile extends Fragment {
                                             final Admin admin = dataSnapshot.getValue(Admin.class);
                                             if (admin != null) {
                                                 final String adminName = admin.getName();
+                                                final String adminImagePath = admin.getImage_path();
                                                 final String adminEmail = admin.getEmail() != null ? admin.getEmail() : "Developer Option";
                                                 final String adminPhone = admin.getPhone_no();
 
                                                 adminNameTV.setText(adminName);
                                                 adminEmailTV.setText(adminEmail);
                                                 adminPhoneNoTV.setText(adminPhone);
+                                                if (!image_path.equals("")) {
+                                                    Picasso.with(MainActivity.instance)
+                                                            .load(adminImagePath)
+                                                            .networkPolicy(NetworkPolicy.OFFLINE)
+                                                            .placeholder(R.drawable.default_avater)
+                                                            .into(adminCIV);
+                                                }
 
                                                 if(adminPhone.equals("")) {
                                                     adminPhoneNoTV.setText("Not Given...");
@@ -178,22 +195,13 @@ public class EmployeeProfile extends Fragment {
         adminPhoneNoTV = view.findViewById(R.id.adminPhoneNoTV);
         pendingWorkTV = view.findViewById(R.id.pendingWorkTV);
         accecptedWorkTV = view.findViewById(R.id.accecptedWorkTV);
-        changeImageFAB = view.findViewById(R.id.changeImageFAB);
 
         loadProfileInfo();
 
         profileEditIB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainActivity.instance, "TRIG", Toast.LENGTH_SHORT).show();
                 AppFragmentManager.replace(MainActivity.instance, AppFragmentManager.fragmentContainer, new EmployeeProfileEdit(), EmployeeProfileEdit.TAG);
-            }
-        });
-
-        changeImageFAB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
             }
         });
 

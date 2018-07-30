@@ -2,8 +2,10 @@ package service.courier.app.dmcx.courierservice.Firebase;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -18,8 +20,11 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import service.courier.app.dmcx.courierservice.Activity.MainActivity;
 
 public class AppFirebase {
 
@@ -115,6 +120,10 @@ public class AppFirebase {
         return mStatusReference;
     }
 
+    public StorageReference getDbStorageReference() {
+        return mStorageReference;
+    }
+
     public DatabaseReference getDbNotificationsReference() {
         return mNotificationsReference;
     }
@@ -203,22 +212,39 @@ public class AppFirebase {
         });
     }
 
-    public void addUserImageToStorage(final DatabaseReference reference, final Map<String, Object> map, Uri imageUri, final FirebaseCallback callback) {
-        mStorageReference.child(getCurrentUserId() + ".jpg").putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+    public void addUserImageToStorage(final DatabaseReference reference, Uri imageUri, final FirebaseCallback callback) {
+        final StorageReference storageReference = mStorageReference.child(AFModel.profile_images).child(getCurrentUserId() + ".jpg");
+        storageReference.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                 if (task.isSuccessful()) {
-                    reference.updateChildren(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            callback.ProcessCallback(true);
+                        public void onSuccess(Uri uri) {
+                            String url = uri.toString();
+                            Map<String, Object> imagePathMap = new HashMap<>();
+                            imagePathMap.put(AFModel.image_path, url);
+
+                            reference.updateChildren(imagePathMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        callback.ProcessCallback(true);
+                                        callback.ExceptionCallback("");
+                                    } else {
+                                        callback.ProcessCallback(false);
+                                        callback.ExceptionCallback("Some exception found!");
+                                    }
+                                }
+                            });
                         }
                     });
                 }
-                else
+                else {
                     callback.ProcessCallback(false);
+                    callback.ExceptionCallback("Some exception found!");
+                }
 
-                callback.ExceptionCallback(task.getException().toString());
             }
         });
     }

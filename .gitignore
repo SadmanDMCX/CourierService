@@ -7,4 +7,5 @@
 .DS_Store
 /build
 /captures
+/_components/notifications/functions/node_modules
 .externalNativeBuild

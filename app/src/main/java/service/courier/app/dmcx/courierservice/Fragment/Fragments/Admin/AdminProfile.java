@@ -15,6 +15,8 @@ import android.widget.Toast;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import dmax.dialog.SpotsDialog;
@@ -52,11 +54,19 @@ public class AdminProfile extends Fragment {
                 if (admin != null) {
                     final String name = admin.getName();
                     final String phone = admin.getPhone_no();
+                    final String image_path = admin.getImage_path();
                     final String email = Vars.appFirebase.getCurrentUser().getEmail();
 
                     profileNameTV.setText(name);
                     profileEmailTV.setText(email);
                     profilePhoneTV.setText(phone);
+
+                    if (!image_path.equals("")) {
+                        Picasso.with(MainActivity.instance)
+                                .load(image_path)
+                                .placeholder(R.drawable.default_avater)
+                                .into(profileImageCIV);
+                    }
 
                     if (phone.equals("")) {
                         profilePhoneTV.setText("Not Given");

@@ -1,17 +1,24 @@
 package service.courier.app.dmcx.courierservice.Fragment.Fragments.Admin;
 
+import android.Manifest;
 import android.animation.PropertyValuesHolder;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,15 +28,21 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.Picasso;
+import com.theartofdev.edmodo.cropper.CropImage;
 import com.tooltip.Tooltip;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import dmax.dialog.SpotsDialog;
 import service.courier.app.dmcx.courierservice.Activity.MainActivity;
 import service.courier.app.dmcx.courierservice.Firebase.AFModel;
+import service.courier.app.dmcx.courierservice.Firebase.AppFirebase;
 import service.courier.app.dmcx.courierservice.Models.Admin;
 import service.courier.app.dmcx.courierservice.R;
 import service.courier.app.dmcx.courierservice.Utility.AppValidator;
@@ -38,8 +51,12 @@ import service.courier.app.dmcx.courierservice.Variables.Vars;
 public class AdminProfileEdit extends Fragment {
 
     public static final String TAG = "ADMIN-PROFILE-EDIT";
+    private final int READ_WRITE_CAMERA_REQUEST_CODE = 991;
 
     private TextView authenticationTV;
+    private CircleImageView profileImageCIV;
+    private FloatingActionButton changeImageFAB;
+    private ProgressBar imageLoadPB;
     private EditText profileNameET;
     private EditText profilePhoneET;
     private EditText profileOldEmailET;
@@ -50,6 +67,26 @@ public class AdminProfileEdit extends Fragment {
 
     private String profileName;
     private String profilePhone;
+    private Uri profileImageUri = null;
+
+    private boolean checkPermission() {
+        if (ActivityCompat.checkSelfPermission(MainActivity.instance, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(MainActivity.instance, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(MainActivity.instance, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+
+            requestPermissions(new String[] { Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA }, READ_WRITE_CAMERA_REQUEST_CODE);
+            return false;
+        }
+
+        return true;
+    }
+
+    private void cropImager() {
+        CropImage.activity()
+                .setAspectRatio(1, 1)
+                .setMaxCropResultSize(1000, 1000)
+                .start(MainActivity.instance, this);
+    }
 
     private void loadProfileData() {
         final AlertDialog spotDialog = new SpotsDialog(MainActivity.instance, "Loading profile...");
@@ -62,8 +99,8 @@ public class AdminProfileEdit extends Fragment {
                 if (admin != null) {
                     final String name = admin.getName();
                     final String phone = admin.getPhone_no();
+                    final String image_path = admin.getImage_path();
                     final String email = Vars.appFirebase.getCurrentUser().getEmail();
-
 
                     profileName = name;
                     profilePhone = phone;
@@ -71,6 +108,13 @@ public class AdminProfileEdit extends Fragment {
                     profileNameET.setText(name);
                     profilePhoneET.setText(phone);
                     profileOldEmailET.setText(email);
+
+                    if (!image_path.equals("")) {
+                        Picasso.with(MainActivity.instance)
+                                .load(image_path)
+                                .placeholder(R.drawable.default_avater)
+                                .into(profileImageCIV);
+                    }
                 }
 
                 spotDialog.dismiss();
@@ -89,6 +133,9 @@ public class AdminProfileEdit extends Fragment {
         View view = inflater.inflate(R.layout.fragment_admin_profile_edit, container, false);
 
         authenticationTV = view.findViewById(R.id.authenticationTV);
+        profileImageCIV = view.findViewById(R.id.profileImageCIV);
+        changeImageFAB = view.findViewById(R.id.changeImageFAB);
+        imageLoadPB = view.findViewById(R.id.imageLoadPB);
         profileNameET = view.findViewById(R.id.profileNameET);
         profilePhoneET = view.findViewById(R.id.profilePhoneET);
         profileOldEmailET = view.findViewById(R.id.profileOldEmailET);
@@ -99,7 +146,6 @@ public class AdminProfileEdit extends Fragment {
         saveBTN = view.findViewById(R.id.saveBTN);
 
         loadProfileData();
-
 
         final Tooltip.Builder tooltipBuilder = new Tooltip.Builder(authenticationTV).setText("For changing email and password you need to fill the new email and password fields and click save in the authenticate section.");;
         authenticationTV.setOnClickListener(new View.OnClickListener() {
@@ -114,9 +160,44 @@ public class AdminProfileEdit extends Fragment {
             }
         });
 
+        changeImageFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (checkPermission()) {
+                    cropImager();
+                }
+            }
+        });
+
         saveBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Toast.makeText(MainActivity.instance, "Please wait...", Toast.LENGTH_LONG).show();
+
+                if (profileImageUri != null) {
+                    imageLoadPB.setVisibility(View.VISIBLE);
+                    DatabaseReference reference = Vars.appFirebase.getDbAdminsReference().child(Vars.appFirebase.getCurrentUserId());
+                    Vars.appFirebase.addUserImageToStorage(reference, profileImageUri, new AppFirebase.FirebaseCallback() {
+                        @Override
+                        public void ProcessCallback(boolean isTaskCompleted) {
+                            if (isTaskCompleted) {
+                                imageLoadPB.setVisibility(View.GONE);
+                                Toast.makeText(MainActivity.instance, "Image Upload Success!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(MainActivity.instance, "Some error found!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void ExceptionCallback(String exception) {
+                            if (!exception.equals("")) {
+                                Toast.makeText(MainActivity.instance, exception, Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                    profileImageUri = null;
+                }
+
                 String name = profileNameET.getText().toString();
                 String phone = profilePhoneET.getText().toString();
 
@@ -200,5 +281,51 @@ public class AdminProfileEdit extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+
+            if (result != null) {
+                profileImageUri = result.getUri();
+                profileImageCIV.setImageURI(profileImageUri);
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+                Toast.makeText(MainActivity.instance, "Error! " + error.getMessage().toString(), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.instance);
+            builder.setTitle("Permission")
+                    .setCancelable(false)
+                    .setMessage("Need permission to get the image from the storage. We don't access any of your private data. Be safe stay safe.")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            checkPermission();
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.cancel();
+                        }
+                    });
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        } else {
+            cropImager();
+        }
     }
 }

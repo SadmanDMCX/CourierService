@@ -19,6 +19,7 @@ public class AFModel {
     public static final String id = "id";
     public static final String email = "email";
     public static final String password = "password";
+    public static final String profile_images = "profile_images";
 
     public static final String latitude = "latitude";
     public static final String longitude = "longitude";
@@ -43,6 +44,4 @@ public class AFModel {
 
     public static final String val_state_online = "online";
     public static final String val_state_offline = "offline";
-
-
 }

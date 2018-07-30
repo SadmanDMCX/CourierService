@@ -43,19 +43,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/changeImageFAB"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
-                android:layout_marginEnd="4dp"
-                android:src="@drawable/camera_white"
-                app:rippleColor="@android:color/white"
-                app:fabSize="mini"
-                app:elevation="2dp"
-                app:layout_constraintBottom_toBottomOf="@+id/profileImageCIV"
-                app:layout_constraintEnd_toEndOf="@+id/profileImageCIV" />
-
             <TextView
                 android:id="@+id/profileNameTV"
                 android:layout_width="wrap_content"

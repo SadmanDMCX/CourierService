@@ -48,6 +48,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -255,10 +256,24 @@ public class MainActivity extends AppCompatActivity {
                     assert classObject != null;
                     if (classObject instanceof Admin) {
                         Admin admin = (Admin) classObject;
+                        String image_path = admin.getImage_path();
+                        if (!image_path.equals("")) {
+                            Picasso.with(MainActivity.instance)
+                                    .load(image_path)
+                                    .placeholder(R.drawable.default_avater)
+                                    .into(navHeaderUserCIV);
+                        }
                         developerName.setText(admin.getName());
                         developerMail.setText(Vars.appFirebase.getCurrentUser().getEmail());
                     } else if (classObject instanceof Employee) {
                         Employee employee = (Employee) classObject;
+                        String image_path = employee.getImage_path();
+                        if (!image_path.equals("")) {
+                            Picasso.with(MainActivity.instance)
+                                    .load(image_path)
+                                    .placeholder(R.drawable.default_avater)
+                                    .into(navHeaderUserCIV);
+                        }
                         developerName.setText(employee.getName());
                         developerMail.setText(Vars.appFirebase.getCurrentUser().getEmail());
                     }

@@ -3,6 +3,7 @@ package service.courier.app.dmcx.courierservice.Fragment.Manager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatSeekBar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
