@@ -199,38 +199,10 @@ public class AuthActivity extends AppCompatActivity {
                                     Vars.isUserAdmin = isTaskCompleted;
                                     Vars.localDB.saveBooleanValue(Vars.PREFS_IS_USER_ADMIN, isTaskCompleted);
 
-                                    if (isTaskCompleted) {
-                                        DatabaseReference reference = Vars.appFirebase.getDbReference().child(AFModel.users).child(AFModel.admins).child(Vars.appFirebase.getCurrentUser().getUid());
-                                        Map<String, Object> map = new HashMap<>();
-                                        map.put(AFModel.status, AFModel.val_state_online);
-                                        reference.updateChildren(map).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()) {
-                                                    @SuppressLint("HardwareIds")
-                                                    String deviceId = Secure.getString(instance.getContentResolver(), Secure.ANDROID_ID);
-                                                    Vars.localDB.saveStringValue(Vars.PREFS_DEVICE_UNIQUE_ID, deviceId);
-                                                    startMainActivity();
-                                                } else {
-                                                    Toast.makeText(instance, "Online Error!", Toast.LENGTH_SHORT).show();
-                                                }
-                                            }
-                                        });
-                                    } else {
-                                        DatabaseReference reference = Vars.appFirebase.getDbReference().child(AFModel.users).child(AFModel.employees).child(Vars.appFirebase.getCurrentUser().getUid());
-                                        Map<String, Object> map = new HashMap<>();
-                                        map.put(AFModel.status, AFModel.val_state_online);
-                                        reference.updateChildren(map).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()) {
-                                                    startMainActivity();
-                                                } else {
-                                                    Toast.makeText(instance, "Online Error!", Toast.LENGTH_SHORT).show();
-                                                }
-                                            }
-                                        });
-                                    }
+                                    @SuppressLint("HardwareIds")
+                                    String deviceId = Secure.getString(instance.getContentResolver(), Secure.ANDROID_ID);
+                                    Vars.localDB.saveStringValue(Vars.PREFS_DEVICE_UNIQUE_ID, deviceId);
+                                    startMainActivity();
                                 }
 
                                 @Override
@@ -344,8 +316,7 @@ public class AuthActivity extends AppCompatActivity {
                                     map.put(AFModel.modified_at, System.currentTimeMillis());
 
                                     final DatabaseReference reference =
-                                            Vars.appFirebase.getDbReference().child(AFModel.users).child(AFModel.admins)
-                                            .child(Vars.appFirebase.getCurrentUser().getUid());
+                                            Vars.appFirebase.getDbAdminsReference().child(Vars.appFirebase.getCurrentUser().getUid());
 
                                     Vars.appFirebase.insert(reference, map, new AppFirebase.FirebaseCallback() {
                                         @Override

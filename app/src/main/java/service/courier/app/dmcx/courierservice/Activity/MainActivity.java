@@ -48,6 +48,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
@@ -171,20 +172,31 @@ public class MainActivity extends AppCompatActivity {
         map.put(AFModel.state, AFModel.val_state_offline);
 
         @SuppressLint("HardwareIds")
-        String deviceId = Vars.localDB.retriveStringValue(Vars.PREFS_DEVICE_UNIQUE_ID, Secure.getString(instance.getContentResolver(), Secure.ANDROID_ID));
+        final String deviceId = Vars.localDB.retriveStringValue(Vars.PREFS_DEVICE_UNIQUE_ID, Secure.getString(instance.getContentResolver(), Secure.ANDROID_ID));
         Vars.appFirebase.getDbStatusReference().child(Vars.appFirebase.getCurrentUserId()).child(deviceId).updateChildren(map).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(instance, "You are now offline!", Toast.LENGTH_SHORT).show();
+                    DatabaseReference notificationTokenReference =
+                            Vars.appFirebase.getDbNotificationsReference().child(AFModel.tokens).child(Vars.appFirebase.getCurrentUserId()).child(deviceId);
+                    notificationTokenReference.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(instance, "You are now offline!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(MainActivity.instance, "Can't recive notification.", Toast.LENGTH_SHORT).show();
+                            }
+
+                            Vars.appFirebase.signOutUser();
+                            Vars.localDB.clearDB();
+                            Vars.reset();
+                            startAuthActivity();
+                        }
+                    });
                 } else {
                     Log.d(Vars.APPTAG, "ExceptionCallback: " + Objects.requireNonNull(task.getException()).getMessage());
                 }
-
-                Vars.appFirebase.signOutUser();
-                Vars.localDB.clearDB();
-                Vars.reset();
-                startAuthActivity();
             }
         });
     }
@@ -217,7 +229,24 @@ public class MainActivity extends AppCompatActivity {
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
-                                    if (!task.isSuccessful()) {
+                                    if (task.isSuccessful()) {
+                                        @SuppressLint("HardwareIds")
+                                        String deviceId = Vars.localDB.retriveStringValue(Vars.PREFS_DEVICE_UNIQUE_ID, Secure.getString(MainActivity.instance.getContentResolver(), Secure.ANDROID_ID));
+                                        String tokenId = FirebaseInstanceId.getInstance().getToken();
+
+                                        Map<String, Object> tokenMap = new HashMap<>();
+                                        tokenMap.put(AFModel.token_id, tokenId);
+                                        DatabaseReference notificationTokenReference =
+                                                Vars.appFirebase.getDbNotificationsReference().child(AFModel.tokens).child(Vars.appFirebase.getCurrentUserId()).child(deviceId);
+                                        notificationTokenReference.setValue(tokenMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (!task.isSuccessful()) {
+                                                    Toast.makeText(MainActivity.instance, "Can't recive notification.", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        });
+                                    } else {
                                         Toast.makeText(MainActivity.instance, "Location couldn't save.", Toast.LENGTH_SHORT).show();
                                     }
                                 }

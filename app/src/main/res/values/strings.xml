@@ -1,7 +1,7 @@
 <resources>
     <string name="google_maps_api_key">AIzaSyB1nh0ebCdPdhwAgFsqW55vDit04l66oSM</string>
 
-    <string name="app_name">CourierService</string>
+    <string name="app_name">Courier Service</string>
     <string name="password">Password</string>
     <string name="email">Email</string>
     <string name="name">Name</string>

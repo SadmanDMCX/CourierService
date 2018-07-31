@@ -197,8 +197,10 @@ public class AdminEmployeeRecyclerViewAdapter extends RecyclerView.Adapter<Admin
                                         notificationMap.put(AFModel.to, currentEmployee.getId());
                                         notificationMap.put(AFModel.message, "A new work is assigned.");
 
-                                        String deviceId = Vars.localDB.retriveStringValue(Vars.PREFS_DEVICE_UNIQUE_ID, "");
-                                        Vars.appFirebase.getDbNotificationsReference().child(Vars.appFirebase.getCurrentUserId()).child(deviceId).setValue(notificationMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        DatabaseReference notificationContentReference = Vars.appFirebase.getDbNotificationsReference().child(AFModel.contents).child(Vars.appFirebase.getCurrentUserId());
+
+                                        String pushId = notificationContentReference.push().getKey();
+                                        notificationContentReference.child(pushId).setValue(notificationMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if (task.isSuccessful()) {

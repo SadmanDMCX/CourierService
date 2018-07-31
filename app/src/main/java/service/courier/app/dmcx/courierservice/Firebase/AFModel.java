@@ -21,6 +21,10 @@ public class AFModel {
     public static final String password = "password";
     public static final String profile_images = "profile_images";
 
+    public static final String token_id = "token_id";
+    public static final String tokens = "tokens";
+    public static final String contents = "contents";
+
     public static final String latitude = "latitude";
     public static final String longitude = "longitude";
 
