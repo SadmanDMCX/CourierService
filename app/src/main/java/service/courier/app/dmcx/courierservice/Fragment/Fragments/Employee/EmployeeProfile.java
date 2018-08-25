@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,9 +79,9 @@ public class EmployeeProfile extends Fragment {
 
                                 if (!image_path.equals("")) {
                                     Picasso.with(MainActivity.instance)
-                                            .load(image_path)
-                                            .placeholder(R.drawable.default_avater)
-                                            .into(profileImageCIV);
+                                        .load(image_path)
+                                        .placeholder(R.drawable.default_avater)
+                                        .into(profileImageCIV);
                                 }
 
                                 if(phone.equals("")) {
@@ -101,12 +102,12 @@ public class EmployeeProfile extends Fragment {
                                                 adminNameTV.setText(adminName);
                                                 adminEmailTV.setText(adminEmail);
                                                 adminPhoneNoTV.setText(adminPhone);
-                                                if (!image_path.equals("")) {
+                                                if (!adminImagePath.equals("")) {
                                                     Picasso.with(MainActivity.instance)
-                                                            .load(adminImagePath)
-                                                            .networkPolicy(NetworkPolicy.OFFLINE)
-                                                            .placeholder(R.drawable.default_avater)
-                                                            .into(adminCIV);
+                                                        .load(adminImagePath)
+                                                        .networkPolicy(NetworkPolicy.OFFLINE)
+                                                        .placeholder(R.drawable.default_avater)
+                                                        .into(adminCIV);
                                                 }
 
                                                 if(adminPhone.equals("")) {
