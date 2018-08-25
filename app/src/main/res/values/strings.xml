@@ -46,7 +46,7 @@
     <string name="edit_button">edit button</string>
     <string name="pending_works">Pending Works</string>
     <string name="accepted_works">Accepted Works</string>
-    <string name="employee_5">Employee: 5</string>
+    <string name="employee_0">Employee: 0</string>
     <string name="active_3">Active: 3</string>
     <string name="wors_19">Works: 19</string>
     <string name="imageview">IMAGEVIEW</string>
@@ -65,4 +65,5 @@
     <string name="save">Save</string>
     <string name="profile">Profile</string>
     <string name="set_destination">Set Destination</string>
+    <string name="_0">0</string>
 </resources>

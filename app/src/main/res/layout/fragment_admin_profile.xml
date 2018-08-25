@@ -134,7 +134,7 @@
                             android:layout_marginBottom="16dp"
                             android:layout_marginEnd="8dp"
                             android:layout_marginStart="8dp"
-                            android:text="@string/employee_5"
+                            android:text="@string/employee_0"
                             android:textAlignment="center"
                             android:textColor="@color/colorPrimaryDark"
                             android:textSize="16sp"
