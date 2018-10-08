@@ -38,6 +38,10 @@ public class AFModel {
     public static final String work_id = "work_id";
     public static final String work_title = "work_title";
     public static final String work_description = "work_description";
+    public static final String work_time = "work_time";
+    public static final String work_pickup = "work_pickup";
+    public static final String work_drop = "work_drop";
+    public static final String work_fare = "work_fare";
     public static final String work_status = "work_status";
 
     public static final String val_work_status_request = "request";

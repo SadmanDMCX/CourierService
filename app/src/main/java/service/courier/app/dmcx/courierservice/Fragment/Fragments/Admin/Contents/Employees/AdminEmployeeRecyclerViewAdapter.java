@@ -118,6 +118,10 @@ public class AdminEmployeeRecyclerViewAdapter extends RecyclerView.Adapter<Admin
 
                 final EditText workTitleET = workAssignDialogView.findViewById(R.id.workTitleET);
                 final EditText workDescET = workAssignDialogView.findViewById(R.id.workDescET);
+                final EditText workTimeET = workAssignDialogView.findViewById(R.id.workTimeET);
+                final EditText workPickupET = workAssignDialogView.findViewById(R.id.workPickupET);
+                final EditText workDropET = workAssignDialogView.findViewById(R.id.workDropET);
+                final EditText workFareET = workAssignDialogView.findViewById(R.id.workFareET);
                 final Button assignBTN = workAssignDialogView.findViewById(R.id.assignBTN);
                 final Button cancelBTN = workAssignDialogView.findViewById(R.id.cancelBTN);
 
@@ -160,9 +164,13 @@ public class AdminEmployeeRecyclerViewAdapter extends RecyclerView.Adapter<Admin
                     public void onClick(View view) {
                         final String title = workTitleET.getText().toString();
                         final String desc = workDescET.getText().toString();
+                        final String time = workTimeET.getText().toString();
+                        final String pick = workPickupET.getText().toString();
+                        final String drop = workDropET.getText().toString();
+                        final String fare = workFareET.getText().toString();
 
-                        if (title.equals("") || desc.equals("")) {
-                            Toast.makeText(MainActivity.instance, "Title & Description is needed!", Toast.LENGTH_SHORT).show();
+                        if (title.equals("") || desc.equals("") || drop.equals("") || fare.equals("") || pick.equals("") || time.equals("")) {
+                            Toast.makeText(MainActivity.instance, "All the contents are necessary!", Toast.LENGTH_SHORT).show();
                             return;
                         }
 
@@ -180,6 +188,11 @@ public class AdminEmployeeRecyclerViewAdapter extends RecyclerView.Adapter<Admin
                         workMap.put(AFModel.work_id, pushId);
                         workMap.put(AFModel.work_title, title);
                         workMap.put(AFModel.work_description, desc);
+                        workMap.put(AFModel.work_time, time);
+                        workMap.put(AFModel.work_pickup, pick);
+                        workMap.put(AFModel.work_drop, drop);
+                        workMap.put(AFModel.work_fare, fare);
+
                         workMap.put(AFModel.latitude, workPlace[0] != null ? workPlace[0].getLatLng().latitude : 360);
                         workMap.put(AFModel.longitude, workPlace[0] != null ? workPlace[0].getLatLng().longitude : 360);
                         workMap.put(AFModel.work_status, AFModel.val_work_status_request);

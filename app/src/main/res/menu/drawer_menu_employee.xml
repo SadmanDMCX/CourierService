@@ -6,14 +6,14 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/homeCNI"
-            android:title="Home"
-            android:icon="@drawable/home_black"
-            />
-        <item
             android:id="@+id/worksCNI"
             android:title="Works"
             android:icon="@drawable/task_black"
+            />
+        <item
+            android:id="@+id/mapCNI"
+            android:title="Map"
+            android:icon="@drawable/map_black"
             />
         <item
             android:id="@+id/profileCNI"

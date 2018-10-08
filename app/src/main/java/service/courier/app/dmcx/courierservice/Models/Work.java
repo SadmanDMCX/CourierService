@@ -5,11 +5,31 @@ public class Work {
     private String work_id;
     private String work_title;
     private String work_description;
+    private String work_time;
+    private String work_pickup;
+    private String work_drop;
+    private String work_fare;
     private String work_status;
     private double latitude;
     private double longitude;
     private long created_at;
     private long modified_at;
+
+    public String getWork_time() {
+        return work_time;
+    }
+
+    public String getWork_pickup() {
+        return work_pickup;
+    }
+
+    public String getWork_drop() {
+        return work_drop;
+    }
+
+    public String getWork_fare() {
+        return work_fare;
+    }
 
     public double getLatitude() {
         return latitude;

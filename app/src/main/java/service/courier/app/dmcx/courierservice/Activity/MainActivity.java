@@ -266,7 +266,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void loadAdminNavHeader(String clild, final Class object) {
+    private void loadNavHeader(String clild, final Class object) {
         View navHederView = navigationView.getHeaderView(0);
         final ImageView navHeaderUserCIV = navHederView.findViewById(R.id.navHeaderUserCIV);
         final TextView developerName = navHederView.findViewById(R.id.developerName);
@@ -344,10 +344,10 @@ public class MainActivity extends AppCompatActivity {
 
         if (Vars.isUserAdmin) {
             navigationView.inflateMenu(R.menu.drawer_menu_admin);
-            loadAdminNavHeader(AFModel.admins, Admin.class);
+            loadNavHeader(AFModel.admins, Admin.class);
         } else {
             navigationView.inflateMenu(R.menu.drawer_menu_employee);
-            loadAdminNavHeader(AFModel.employees, Employee.class);
+            loadNavHeader(AFModel.employees, Employee.class);
         }
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -385,12 +385,12 @@ public class MainActivity extends AppCompatActivity {
                             }
                         } else {
                             switch (menuItem.getItemId()) {
-                                case R.id.homeCNI: {
-                                    loadNavFragment("Courier Service", 15, AppFragmentManager.fragmentMapContainer, new EmployeeHome(), EmployeeHome.TAG);
-                                    break;
-                                }
                                 case R.id.worksCNI: {
                                     loadNavFragment("Works", 0, AppFragmentManager.fragmentContainer, new EmployeeWorks(), EmployeeWorks.TAG);
+                                    break;
+                                }
+                                case R.id.mapCNI: {
+                                    loadNavFragment("Map", 15, AppFragmentManager.fragmentMapContainer, new EmployeeHome(), EmployeeHome.TAG);
                                     break;
                                 }
                                 case R.id.profileCNI: {
@@ -415,8 +415,8 @@ public class MainActivity extends AppCompatActivity {
                 loadNavFragment("Courier Service", TOOLBAR_MARGIN_SIZE, AppFragmentManager.fragmentMapContainer, new AdminHome(), AdminHome.TAG);
                 navigationView.setCheckedItem(R.id.homeANI);
             } else {
-                loadNavFragment("Courier Service", 15, AppFragmentManager.fragmentMapContainer, new EmployeeHome(), EmployeeHome.TAG);
-                navigationView.setCheckedItem(R.id.homeCNI);
+                loadNavFragment("Works", 0, AppFragmentManager.fragmentContainer, new EmployeeWorks(), EmployeeWorks.TAG);
+                navigationView.setCheckedItem(R.id.worksCNI);
             }
         }
     }
@@ -473,7 +473,7 @@ public class MainActivity extends AppCompatActivity {
             navigationView.setCheckedItem(R.id.homeANI);
         } else if (!Vars.currentFragment.getTag().equals(EmployeeHome.TAG) && !Vars.isUserAdmin) {
             loadNavFragment("Courier Service", 0, AppFragmentManager.fragmentContainer, new EmployeeHome(), EmployeeHome.TAG);
-            navigationView.setCheckedItem(R.id.homeCNI);
+            navigationView.setCheckedItem(R.id.mapCNI);
         } else {
             fusedLocationProviderClient.removeLocationUpdates(locationCallback);
 

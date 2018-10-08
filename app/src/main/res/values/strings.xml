@@ -17,7 +17,7 @@
     <string name="yes">Yes</string>
     <string name="do_you_want_to_assign_work_to_this_employee">Do you want to assign work to this employee?</string>
     <string name="message">Message</string>
-    <string name="title">Title</string>
+    <string name="title">Title / Job Id</string>
     <string name="description">Description</string>
     <string name="assign">Assign</string>
     <string name="new_work">New Work</string>
@@ -66,4 +66,8 @@
     <string name="profile">Profile</string>
     <string name="set_destination">Set Destination</string>
     <string name="_0">0</string>
+    <string name="fare">Fare</string>
+    <string name="drop">Drop</string>
+    <string name="pickup">Pickup</string>
+    <string name="time">Time</string>
 </resources>

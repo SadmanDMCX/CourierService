@@ -50,6 +50,74 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/workTitleET" />
 
+    <EditText
+        android:id="@+id/workTimeET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/white_edittext_bg"
+        android:hint="@string/time"
+        android:inputType="text"
+        android:maxLines="2"
+        android:padding="13dp"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/workDescET" />
+
+    <EditText
+        android:id="@+id/workPickupET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/white_edittext_bg"
+        android:hint="@string/pickup"
+        android:inputType="text"
+        android:maxLines="2"
+        android:padding="13dp"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/workTimeET" />
+
+    <EditText
+        android:id="@+id/workDropET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/white_edittext_bg"
+        android:hint="@string/drop"
+        android:inputType="text"
+        android:maxLines="2"
+        android:padding="13dp"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/workPickupET" />
+
+    <EditText
+        android:id="@+id/workFareET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/white_edittext_bg"
+        android:hint="@string/fare"
+        android:inputType="text"
+        android:maxLines="2"
+        android:padding="13dp"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/workDropET" />
+
     <fragment
         android:id="@+id/setDestinationPACF"
         android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
@@ -60,7 +128,7 @@
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/workDescET" />
+        app:layout_constraintTop_toBottomOf="@+id/workFareET" />
 
     <Button
         android:id="@+id/assignBTN"

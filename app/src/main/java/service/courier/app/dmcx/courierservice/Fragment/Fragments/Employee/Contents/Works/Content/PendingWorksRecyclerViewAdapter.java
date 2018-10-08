@@ -53,6 +53,11 @@ public class PendingWorksRecyclerViewAdapter extends RecyclerView.Adapter<Pendin
         final String title = works.get(position).getWork_title();
         final String status = AppUtils.FirstLetterCapital(works.get(position).getWork_status());
         final String desc = works.get(position).getWork_description();
+        final String time = works.get(position).getWork_time() == null ? "Not given" : works.get(position).getWork_time();
+        final String fare = works.get(position).getWork_fare() == null ? "Not given" : works.get(position).getWork_fare();
+        final String pickup = works.get(position).getWork_pickup() == null ? "Not given" : works.get(position).getWork_pickup();
+        final String drop = works.get(position).getWork_drop() == null ? "Not given" : works.get(position).getWork_drop();
+
 
         holder.taskTitleTV.setText(title);
         holder.taskDescTV.setText(desc);
@@ -115,10 +120,18 @@ public class PendingWorksRecyclerViewAdapter extends RecyclerView.Adapter<Pendin
                 TextView dWorkTitleTV = dialogView.findViewById(R.id.dWorkTitleTV);
                 TextView dWorkStatus = dialogView.findViewById(R.id.dWorkStatus);
                 TextView dWorkDescTV = dialogView.findViewById(R.id.dWorkDescTV);
+                TextView dWorkTimeTV = dialogView.findViewById(R.id.dWorkTimeTV);
+                TextView dWorkFareTV = dialogView.findViewById(R.id.dWorkFareTV);
+                TextView dWorkPickUpTV = dialogView.findViewById(R.id.dWorkPickUpTV);
+                TextView dWorkDropTV = dialogView.findViewById(R.id.dWorkDropTV);
 
-                dWorkTitleTV.setText(title);
-                dWorkStatus.setText("Status: " + status);
+                dWorkTitleTV.setText(new StringBuilder("Job: ").append(title));
+                dWorkStatus.setText(new StringBuilder("Status: " ).append(status));
                 dWorkDescTV.setText(desc);
+                dWorkTimeTV.setText(new StringBuilder("Time: ").append(time));
+                dWorkFareTV.setText(new StringBuilder("Fare: ").append(fare));
+                dWorkPickUpTV.setText(new StringBuilder("Pick Up: ").append(pickup));
+                dWorkDropTV.setText(new StringBuilder("Drop: ").append(drop));
 
                 AppAnimation.rotateAnimationRight(closeDialogIB);
                 closeDialogIB.setOnClickListener(new View.OnClickListener() {
