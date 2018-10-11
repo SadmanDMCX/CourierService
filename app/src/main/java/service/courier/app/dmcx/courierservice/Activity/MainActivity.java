@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadNavFragment(String title, int marginSize, int container, Fragment fragment, String tag) {
-        toolbar.setTitle(title);
+        getSupportActionBar().setTitle(title);
         loadToolbarPosition(marginSize);
         AppFragmentManager.replace(MainActivity.instance, container, fragment, tag);
     }
@@ -470,9 +470,11 @@ public class MainActivity extends AppCompatActivity {
         } else if (!Vars.currentFragment.getTag().equals(AdminHome.TAG) && Vars.isUserAdmin) {
             loadNavFragment("Courier Service", TOOLBAR_MARGIN_SIZE, AppFragmentManager.fragmentMapContainer, new AdminHome(), AdminHome.TAG);
             navigationView.setCheckedItem(R.id.homeANI);
-        } else if (!Vars.currentFragment.getTag().equals(EmployeeHome.TAG) && !Vars.isUserAdmin) {
-            loadNavFragment("Courier Service", 0, AppFragmentManager.fragmentContainer, new EmployeeHome(), EmployeeHome.TAG);
-            navigationView.setCheckedItem(R.id.mapCNI);
+        }
+
+        else if (!Vars.currentFragment.getTag().equals(EmployeeWorks.TAG) && !Vars.isUserAdmin) {
+            loadNavFragment("Works", 0, AppFragmentManager.fragmentContainer, new EmployeeWorks(), EmployeeWorks.TAG);
+            navigationView.setCheckedItem(R.id.worksCNI);
         } else {
             fusedLocationProviderClient.removeLocationUpdates(locationCallback);
 
