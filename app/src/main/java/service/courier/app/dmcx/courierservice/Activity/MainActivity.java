@@ -252,7 +252,6 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             });
 
-
                 } else {
                     Log.d(Vars.APPTAG, "getDeviceLocation: no location found.");
                     Toast.makeText(MainActivity.instance, "Unable to get location!", Toast.LENGTH_SHORT).show();
