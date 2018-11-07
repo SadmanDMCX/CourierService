@@ -278,6 +278,8 @@ public class MainActivity extends AppCompatActivity {
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                spotDialog.dismiss();
+
                 if (dataSnapshot.exists()) {
                     Object classObject = dataSnapshot.getValue(object);
 
@@ -306,13 +308,11 @@ public class MainActivity extends AppCompatActivity {
                         developerMail.setText(Vars.appFirebase.getCurrentUser().getEmail());
                     }
                 }
-
-                spotDialog.dismiss();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                spotDialog.dismiss();
             }
         });
     }
@@ -355,6 +355,10 @@ public class MainActivity extends AppCompatActivity {
                 final MenuItem menuItem = item;
                 navigationView.setCheckedItem(item.getItemId());
                 drawerLayout.closeDrawer(GravityCompat.START);
+                if (Vars.currentFragment != null) {
+                    if (item.getItemId() != R.id.signOutANI)
+                        AppFragmentManager.remove(instance, Vars.currentFragment);
+                }
 
                 new Handler().postDelayed(new Runnable() {
                     @Override

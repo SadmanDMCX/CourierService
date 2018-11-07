@@ -10,6 +10,8 @@
         android:id="@+id/employeeRV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingBottom="30dp"
+        android:clipToPadding="false"
         />
 
     <android.support.design.widget.FloatingActionButton

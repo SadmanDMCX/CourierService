@@ -18,12 +18,23 @@
                                 <PersistentState>
                                   <option name="children">
                                     <map>
+                                      <entry key="clipArt">
+                                        <value>
+                                          <PersistentState>
+                                            <option name="values">
+                                              <map>
+                                                <entry key="paddingPercent" value="25" />
+                                              </map>
+                                            </option>
+                                          </PersistentState>
+                                        </value>
+                                      </entry>
                                       <entry key="clipartAsset">
                                         <value>
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="url" value="jar:file:/H:/Android/Android%20Studio%203.1.1/plugins/android/lib/android.jar!/images/material_design_icons/maps/ic_map_black_24dp.xml" />
+                                                <entry key="url" value="jar:file:/H:/Android/Android%20Studio%203.1.1/plugins/android/lib/android.jar!/images/material_design_icons/image/ic_edit_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -34,7 +45,7 @@
                                   <option name="values">
                                     <map>
                                       <entry key="imageAsset" value="E:\Downloads\Pictures\Courier Service App - Android\clipboard.png" />
-                                      <entry key="outputName" value="map_black" />
+                                      <entry key="outputName" value="edit_black_sm" />
                                       <entry key="theme" value="CUSTOM" />
                                       <entry key="themeColor" value="212121" />
                                     </map>

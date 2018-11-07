@@ -12,7 +12,10 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/adminWorkListRV"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="40dp"
+            />
 
     </android.support.v4.widget.SwipeRefreshLayout>
 

@@ -3,7 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginTop="5dp"
-    android:layout_marginBottom="5dp"
     android:layout_marginLeft="5dp"
     android:layout_marginRight="5dp"
     app:cardCornerRadius="5dp"
@@ -20,7 +19,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginBottom="16dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="12dp"
             android:layout_marginTop="16dp"
             android:src="@mipmap/app_icon_round"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -59,8 +58,8 @@
 
         <ImageView
             android:id="@+id/workIV"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_marginEnd="16dp"
             android:contentDescription="@string/work_image"
             android:src="@drawable/work_black"

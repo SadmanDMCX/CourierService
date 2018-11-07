@@ -60,4 +60,8 @@ public class AppFragmentManager {
                 .commit();
     }
 
+    public static void remove(AppCompatActivity appCompatActivity, Fragment fragment) {
+        appCompatActivity.getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+    }
+
 }
